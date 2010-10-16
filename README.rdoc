@@ -22,7 +22,7 @@ For example
 
 == Notes
 
-This software has not yet been tested in the wild and is a very early version.
+This software has not yet been tested in the wild. This thing is brand spankin new. 
 
 == License 
 
