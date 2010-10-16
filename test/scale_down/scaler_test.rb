@@ -1,15 +1,15 @@
-require File.expand_path(File.dirname(__FILE__))+'/test_helper'
+require File.expand_path(File.dirname(__FILE__))+'/../test_helper'
 
-class Scaler::Test < Test::Unit::TestCase
+class ScaleDown::Scaler::Test < Test::Unit::TestCase
 
   context "Scaler::Test" do
     setup do
-      Scaler.hmac_key    = "secret"
-      Scaler.hmac_method = HMAC::MD5
-      Scaler.hmac_length = 8
-      Scaler.root_path   = "/tmp"
+      ScaleDown::Scaler.hmac_key    = "secret"
+      ScaleDown::Scaler.hmac_method = HMAC::MD5
+      ScaleDown::Scaler.hmac_length = 8
+      ScaleDown::Scaler.root_path   = "/tmp"
 
-      hmac = HMAC::MD5.new("secret").update("file/pathfilename.png400x300-crop").to_s
+      hmac = HMAC::MD5.new("secret").update("file/path/filename.png/400x300-crop").to_s
 
       @params = {
         :path     => "file/path",
@@ -21,21 +21,21 @@ class Scaler::Test < Test::Unit::TestCase
 
     context "HMAC" do
       should "validate when the params match the HMAC signature" do
-        assert Scaler.valid_hmac?(@params)
+        assert ScaleDown::Scaler.valid_hmac?(@params)
       end
 
       should "not validate when the params do not match the HMAC signature" do
-        assert !Scaler.valid_hmac?(@params.merge(:path => "file/different"))
+        assert !ScaleDown::Scaler.valid_hmac?(@params.merge(:path => "file/different"))
       end
     end
 
     context "instance" do
       setup do
-        @scaler = Scaler.new @params
+        @scaler = ScaleDown::Scaler.new @params
       end
 
       should "validate the HMAC" do
-        Scaler.expects(:valid_hmac?).with(@params).returns true
+        ScaleDown::Scaler.expects(:valid_hmac?).with(@params).returns true
         assert @scaler.valid_hmac?
       end
 
@@ -54,11 +54,11 @@ class Scaler::Test < Test::Unit::TestCase
       end
 
       should "have a redirect path" do
-        assert_equal "file/path/scaled/filename-400x300-crop.png", @scaler.redirect_path
+        assert_equal "/file/path/scaled/filename-400x300-crop.png", @scaler.redirect_path
       end
 
       should "process the image" do
-        Image.expects(:scale).with(
+        ScaleDown::Image.expects(:scale).with(
           :file    => @scaler.root_path,
           :out     => @scaler.scaled_file_path,
           :options => @scaler.image_options).returns true
@@ -68,13 +68,13 @@ class Scaler::Test < Test::Unit::TestCase
 
       should "default to a jpg out file" do
         ["jpg", "tga", "tif", "pdf", "psd"].each do |ext|
-          scaler = Scaler.new @params.merge(:filename => "test.#{ext}")
+          scaler = ScaleDown::Scaler.new @params.merge(:filename => "test.#{ext}")
           assert_match /\.jpg$/, scaler.scaled_file_path
         end
       end
 
       should "use a png for png graphics" do
-        scaler = Scaler.new @params.merge(:filename => "test.png")
+        scaler = ScaleDown::Scaler.new @params.merge(:filename => "test.png")
         assert_match /\.png$/, scaler.scaled_file_path
       end
     end
@@ -89,47 +89,47 @@ class Scaler::Test < Test::Unit::TestCase
 
         context "with a valid HMAC" do
           setup do
-            Scaler.expects(:valid_hmac?).returns true
-            Image.expects(:scale).returns true
+            ScaleDown::Scaler.expects(:valid_hmac?).returns true
+            ScaleDown::Image.expects(:scale).returns true
           end
 
           should "scale the image" do
-            Scaler.process(@params)
+            ScaleDown::Scaler.process(@params)
           end
 
           should "return a 301 redirect to the processed image's URL" do
-            assert_equal ["file/path/scaled/filename-400x300-crop.png", 301], Scaler.process(@params)
+            assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Scaler.process(@params)
           end
         end
 
         context "without a valid HMAC" do
           should "return a 403 Forbidden response" do
-          Scaler.expects(:valid_hmac?).returns false
-          assert_equal 403, Scaler.process(@params)[1]
+            ScaleDown::Scaler.expects(:valid_hmac?).returns false
+            assert_equal 403, ScaleDown::Scaler.process(@params)[1]
+          end
+        end
+      end
+
+      context "for an existing, scaled, image" do
+        setup do
+          File.expects(:exists?).with("/tmp/file/path/filename.png").returns true
+          File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns true
+        end
+
+        should "return a 301 redirect to the processed image's URL" do
+          assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Scaler.process(@params)
+        end
+      end
+
+      context "for a missing image" do
+        setup do
+          File.expects(:exists?).with("/tmp/file/path/filename.png").returns false
+        end
+
+        should "return a 404" do
+          assert_equal 404, ScaleDown::Scaler.process(@params)[1]
         end
       end
     end
-
-    context "for an existing, scaled, image" do
-      setup do
-        File.expects(:exists?).with("/tmp/file/path/filename.png").returns true
-        File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns true
-      end
-
-      should "return a 301 redirect to the processed image's URL" do
-        assert_equal ["file/path/scaled/filename-400x300-crop.png", 301], Scaler.process(@params)
-      end
-    end
-
-    context "for a missing image" do
-      setup do
-        File.expects(:exists?).with("/tmp/file/path/filename.png").returns false
-      end
-
-      should "return a 404" do
-        assert_equal 404, Scaler.process(@params)[1]
-      end
-    end
-  end
   end
 end

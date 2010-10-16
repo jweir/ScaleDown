@@ -1,16 +1,16 @@
-require File.expand_path(File.dirname(__FILE__))+'/test_helper'
+require File.expand_path(File.dirname(__FILE__))+'/../test_helper'
 
-class Controller::Test < Test::Unit::TestCase
+class ScaleDown::Controller::Test < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    Controller
+    ScaleDown::Controller
   end
 
   context "parsing a request" do
 
     should "have an image path" do
-      Scaler.expects(:request).with(
+      ScaleDown::Scaler.expects(:process).with(
         :path     => "user/path",
         :filename => "filename.png",
         :geometry => "400x300-cropped-grayscale",
@@ -24,7 +24,7 @@ class Controller::Test < Test::Unit::TestCase
   context "a valid request" do
 
     should "redirect to the image path" do
-      Scaler.expects(:request).returns ["/image-path", 301]
+      ScaleDown::Scaler.expects(:process).returns ["/image-path", 301]
       get "/path/filename/geo/hmac"
 
       assert_equal 301, last_response.status
@@ -34,7 +34,7 @@ class Controller::Test < Test::Unit::TestCase
 
   context "an invalid request" do
     should "respond with a 403 and error message" do
-      Scaler.expects(:request).returns ["Error description", 403]
+      ScaleDown::Scaler.expects(:process).returns ["Error description", 403]
 
       get "/path/filename/geo/hmac"
 

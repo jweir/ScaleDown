@@ -1,9 +1,5 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'sinatra'
-require 'lib/scaler'
 
-class Controller < Sinatra::Application
+class ScaleDown::Controller < Sinatra::Application
 
   set :raise_errors, true
   set :show_exceptions, false
@@ -19,7 +15,7 @@ class Controller < Sinatra::Application
 
   protected
   def scaler(params)
-    Scaler.request \
+    ScaleDown::Scaler.process \
       :path     => params[:splat].join("/"),
       :filename => params[:filename],
       :geometry => params[:geometry],

@@ -1,9 +1,9 @@
-require File.expand_path(File.dirname(__FILE__))+'/test_helper'
+require File.expand_path(File.dirname(__FILE__))+'/../test_helper'
 
-class Image::Test < Test::Unit::TestCase
+class ScaleDown::Image::Test < Test::Unit::TestCase
 
   def create(file_path, out_path, options)
-    Image.scale \
+    ScaleDown::Image.scale \
       :file    => file_path,
       :out     => out_path,
       :options => options
@@ -38,7 +38,7 @@ class Image::Test < Test::Unit::TestCase
 
   context "#geometry" do
     should "convert 'auto' to nil" do
-      geo = Image.geometry(:width => "auto", :height => "400")
+      geo = ScaleDown::Image.geometry(:width => "auto", :height => "400")
       assert_equal 0.0, geo.width
       assert_equal 400, geo.height
     end

@@ -1,4 +1,4 @@
-class Image
+class ScaleDown::Image
   include Magick
 
   class << self
@@ -37,14 +37,6 @@ class Image
     @wrote
   end
 
-  def height
-    @file.rows
-  end
-
-  def width
-    @file.columns
-  end
-
   protected
 
     def save 
@@ -57,7 +49,7 @@ class Image
 
     def fix_color_space
       if @file.colorspace == Magick::CMYKColorspace
-        @file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../color_profiles/sRGB.icm"
+        @file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
         @file = @file.quantize 2**24, Magick::RGBColorspace
       end
     end

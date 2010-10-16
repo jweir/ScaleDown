@@ -2,20 +2,19 @@ require 'RMagick'
 require 'hmac-md5'
 require 'hmac-sha1'
 
-class Scaler
+class ScaleDown::Scaler
 
   class << self
     attr_accessor :hmac_method, :hmac_key, :hmac_length
     attr_accessor :root_path
 
     def process(params)
-      scaler = Scaler.new(params)
+      scaler = new(params)
 
       return ["Missing file", 404] unless scaler.root_file_exists?
       return [scaler.redirect_path, 301] if scaler.scaled_file_exists?
 
-      if scaler.valid_hmac?
-        scaler.scale
+      if scaler.valid_hmac? && scaler.scale
         [scaler.redirect_path, 301]
       else
         ["Error message", 403]
@@ -23,7 +22,7 @@ class Scaler
     end
 
     def valid_hmac?(params)
-      str = [params[:path], params[:filename], params[:geometry]].join
+      str = [params[:path], "/", params[:filename], "/", params[:geometry]].join
       hmac_method.new(hmac_key).update(str).to_s[0...hmac_length] == params[:hmac]
     end
   end
@@ -41,7 +40,7 @@ class Scaler
   end
 
   def scale
-    Image.scale \
+    ScaleDown::Image.scale \
       :file    => root_path,
       :out     => scaled_file_path,
       :options => image_options
@@ -52,7 +51,7 @@ class Scaler
   end
 
   def redirect_path
-    [@params[:path], "scaled", scaled_filename].join("/")
+    ["/"+@params[:path], "scaled", scaled_filename].join("/")
   end
 
   def root_file_exists?
