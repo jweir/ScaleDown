@@ -1,4 +1,4 @@
-= ScaleDown =
+= ScaleDown
 
 A Sintra based server for scaling and cropping images.  Nothing more, nothing less.
 
@@ -13,13 +13,13 @@ For example
     http://images.example.com/images/scaled/logo-400x300.png
 
 
-== Configuration ==
+== Configuration
 
     ScaleDown::Scaler.hmac_key    = "secret"
     ScaleDown::Scaler.hmac_method = HMAC::MD5
     ScaleDown::Scaler.hmac_length = 8
     ScaleDown::Scaler.root_path   = "/tmp/scale_down"
 
-== Notes ==
+== Notes
 
 This software has not yet been tested in the wild and is a very early version.
