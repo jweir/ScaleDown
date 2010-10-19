@@ -6,7 +6,7 @@ class ScaleDown::Controller < Sinatra::Application
   set :public, "/Users/johnweir/Sites/famedriver/site/public"
 
   get '/' do
-    "ScaleDown v 0.1"
+    "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"
   end
 
   get '/*/:filename/:geometry/:hmac' do

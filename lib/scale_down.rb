@@ -5,6 +5,7 @@ require 'rubygems'
 require 'sinatra'
 
 module ScaleDown
+  require 'scale_down/version'
   require 'scale_down/controller'
   require 'scale_down/scaler'
   require 'scale_down/image'
