@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name        = "scale_down"
   s.version     = ScaleDown::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
+  s.authors     = ["John Weir"]
+  s.email       = ["john@famedriver.com"]
   s.homepage    = "http://rubygems.org/gems/scale_down"
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{A Sinatra based server for quickly scaling and serving images.}
+  s.description = %q{}
 
   s.rubyforge_project = "scale_down"
 
