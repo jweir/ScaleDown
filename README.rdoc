@@ -11,7 +11,7 @@ For example
   [  image server address  ][ image source ][ size ][ hmac  ]
   http://images.example.com/images/logo.png/400x300/A3SDACEDF
 
-  would redirect to (via 301) the scaled image
+  would 301 redirect to the scaled image
 
   http://images.example.com/images/scaled/logo-400x300.png
 
@@ -53,11 +53,10 @@ Create a rackup file (config.ru)
 
 Start the server using whatever server you want.
 
-  thin start -p 3002 
+  thin start -p 3002
 
-RMagick can be a bit tricky to install, these links[http://www.google.com/search?q=install+rmagick] might help.
 
-== Generating the URL 
+== Generating the URL
 
 In your application with the images you will need to generate the URL for the image source.
 
@@ -68,6 +67,8 @@ In your application with the images you will need to generate the URL for the im
     hmac = HMAC::SHA1.new("secret").update(url).to_s[0...8]
     "http://images.myserver.com#{url}/#{hmac}"
   end
+
+Of course this could be done in PHP, Python, or whatever language your application is running.
 
 == TODO
 
@@ -81,9 +82,11 @@ Custom Read/Write methods to allow for more than just local storage.
 
 == Dependencies
 
-Sinatra
-RMagick
-Ruby-HMAC
+* Sinatra
+* RMagick
+* Ruby-HMAC
+
+RMagick can be a bit tricky to install, these links[http://www.google.com/search?q=install+rmagick] might help.
 
 == License
 
@@ -98,4 +101,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
