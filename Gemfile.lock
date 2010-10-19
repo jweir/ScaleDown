@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    scale_down (0.0.1)
+    scale_down (0.0.3)
       rake (>= 0.8.7)
       rmagick (>= 2.1)
       rmagick (>= 2.1)
