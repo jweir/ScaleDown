@@ -1,8 +1,10 @@
 require 'scale_down'
 
-ScaleDown::Scaler.hmac_key    = "secret"
-ScaleDown::Scaler.hmac_method = HMAC::MD5
-ScaleDown::Scaler.hmac_length = 8
-ScaleDown::Scaler.root_path   = File.expand_path(File.dirname(__FILE__))+"/public"
+ScaleDown.tap do |config|
+  config.hmac_key    = "secret"
+  config.hmac_method = HMAC::MD5
+  config.hmac_length = 8
+  config.root_path   = File.expand_path(File.dirname(__FILE__))+"/public"
+end
 
 run ScaleDown::Controller

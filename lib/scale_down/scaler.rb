@@ -5,8 +5,6 @@ require 'hmac-sha1'
 class ScaleDown::Scaler
 
   class << self
-    attr_accessor :hmac_method, :hmac_key, :hmac_length
-    attr_accessor :root_path
 
     def process(params)
       scaler = new(params)
@@ -19,15 +17,6 @@ class ScaleDown::Scaler
       else
         ["Error message", 403]
       end
-    end
-
-    def valid_hmac?(params)
-      str = [params[:path], "/", params[:filename], "/", params[:geometry]].join
-      hmac(str) == params[:hmac]
-    end
-
-    def hmac(string)
-      hmac_method.new(hmac_key).update(string).to_s[0...hmac_length]
     end
   end
 
@@ -51,7 +40,7 @@ class ScaleDown::Scaler
   end
 
   def valid_hmac?
-    self.class.valid_hmac?(@params)
+    ScaleDown.valid_hmac?(@params)
   end
 
   def redirect_path
@@ -67,11 +56,11 @@ class ScaleDown::Scaler
   end
 
   def root_path
-    File.join(self.class.root_path, @params[:path], @params[:filename])
+    File.join(ScaleDown.root_path, @params[:path], @params[:filename])
   end
 
   def scaled_file_path
-    File.join(self.class.root_path, redirect_path)
+    File.join(ScaleDown.root_path, redirect_path)
   end
 
   def scaled_filename

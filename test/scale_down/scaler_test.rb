@@ -4,10 +4,10 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
 
   context "Scaler::Test" do
     setup do
-      ScaleDown::Scaler.hmac_key    = "secret"
-      ScaleDown::Scaler.hmac_method = HMAC::MD5
-      ScaleDown::Scaler.hmac_length = 8
-      ScaleDown::Scaler.root_path   = "/tmp"
+      ScaleDown.hmac_key    = "secret"
+      ScaleDown.hmac_method = HMAC::MD5
+      ScaleDown.hmac_length = 8
+      ScaleDown.root_path   = "/tmp"
 
       hmac = HMAC::MD5.new("secret").update("file/path/filename.png/400x300-crop").to_s
 
@@ -19,23 +19,13 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
       }
     end
 
-    context "HMAC" do
-      should "validate when the params match the HMAC signature" do
-        assert ScaleDown::Scaler.valid_hmac?(@params)
-      end
-
-      should "not validate when the params do not match the HMAC signature" do
-        assert !ScaleDown::Scaler.valid_hmac?(@params.merge(:path => "file/different"))
-      end
-    end
-
     context "instance" do
       setup do
         @scaler = ScaleDown::Scaler.new @params
       end
 
       should "validate the HMAC" do
-        ScaleDown::Scaler.expects(:valid_hmac?).with(@params).returns true
+        ScaleDown.expects(:valid_hmac?).with(@params).returns true
         assert @scaler.valid_hmac?
       end
 
@@ -89,7 +79,7 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
 
         context "with a valid HMAC" do
           setup do
-            ScaleDown::Scaler.expects(:valid_hmac?).returns true
+            ScaleDown.expects(:valid_hmac?).returns true
             ScaleDown::Image.expects(:scale).returns true
           end
 
@@ -104,7 +94,7 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
 
         context "without a valid HMAC" do
           should "return a 403 Forbidden response" do
-            ScaleDown::Scaler.expects(:valid_hmac?).returns false
+            ScaleDown.expects(:valid_hmac?).returns false
             assert_equal 403, ScaleDown::Scaler.process(@params)[1]
           end
         end
