@@ -8,7 +8,7 @@ class ScaleDown::Test < Test::Unit::TestCase
   end
 
   def valid_get(path)
-    get "/#{path}/#{ScaleDown.hmac(path)}"
+    get "#{path}/#{ScaleDown.hmac(path)}"
   end
 
   context "ScaleDown" do
@@ -21,7 +21,7 @@ class ScaleDown::Test < Test::Unit::TestCase
 
     context "HMAC" do
       setup do
-        hmac = HMAC::SHA1.new("secret").update("file/path/filename.png/400x300-crop").to_s
+        hmac = HMAC::SHA1.new("secret").update("/file/path/filename.png/400x300-crop").to_s
 
         @params = {
           :path     => "file/path",
@@ -54,19 +54,19 @@ class ScaleDown::Test < Test::Unit::TestCase
       end
 
       should "get an image and scale it" do
-        valid_get 'test_images/example_1/graphic.png/400x300-cropped'
+        valid_get '/test_images/example_1/graphic.png/400x300-cropped'
         assert_equal 301, last_response.status
         assert_equal "/test_images/example_1/scaled/graphic-400x300-cropped.png", last_response["Location"]
         assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/graphic-400x300-cropped.png")
       end
 
       should "get a nonexistant image and return a 404" do
-        valid_get "test_exmaples/example_none/image.jpg"
+        valid_get "/test_exmaples/example_none/image.jpg"
         assert_equal 404, last_response.status
       end
 
       should "get an invalid image and return a 403" do
-        valid_get 'test_images/example_2/invalid_jpeg.jpg/400x300-cropped'
+        valid_get '/test_images/example_2/invalid_jpeg.jpg/400x300-cropped'
 
         assert_equal 403, last_response.status
         assert !File.exists?("/tmp/scale_down/test_images/example_2/scaled/invalid_jpeg-400x300-cropped.jpg")
