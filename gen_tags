@@ -1,2 +1,0 @@
-#!/bin/sh
-ctags -R . /Users/johnweir/.rvm/gems/ruby-1.8.7-p302\@famedriver-images/gems/
