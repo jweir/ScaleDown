@@ -15,9 +15,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "scale_down"
 
   s.add_dependency "rmagick", ">= 2.1"
-  s.add_dependency "rake", ">= 0.8.7"
   s.add_dependency "sinatra", ">= 1.0"
-  s.add_dependency "rmagick", ">= 2.1"
   s.add_dependency "ruby-hmac", ">= 0.4.0"
 
   s.add_development_dependency "contest", ">= 0.1.2"
