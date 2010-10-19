@@ -1,16 +1,29 @@
 = ScaleDown
 
-A Sintra based server for scaling and cropping images.  Nothing more, nothing less.
+A RESTful server for quickly scaling and serving images. Nothing more.
 
-Images are scaled based upon their URL. An HMAC stub is used to prevent malicious scaling of images (ie: bring your server down.)
+Supports cropping images and converts CMYK to RGB.
+
+Images are scaled based upon their URL. An HMAC signature is used to prevent malicious scaling of images (ie: bring your server down.)
 
 For example
 
+    [  image server address  ][ image source ][ size ][ hmac  ]
     http://images.example.com/images/logo.png/400x300/A3SDACEDF
 
-    would redirect to (via 301) 
+    would redirect to (via 301) the scaled image
 
     http://images.example.com/images/scaled/logo-400x300.png
+
+To crop an image include the 'cropped' option
+
+    http://images.example.com/images/logo.png/400x300-cropped/A3SDACEDF
+
+Use 'auto' to have an image scale to one dimension or another.
+
+For example, to ensure an image is 300 pixels wide
+
+    http://images.example.com/images/logo.png/300xauto/A3SDACEDF
 
 
 == Configuration
@@ -20,17 +33,37 @@ For example
     ScaleDown::Scaler.hmac_length = 8
     ScaleDown::Scaler.root_path   = "/tmp/scale_down"
 
-== Notes
+== Example URL generator
 
-This software has not yet been tested in the wild. This thing is brand spankin new. 
+    require 'HMAC::MD5'
 
-== License 
+    # ie scaled_image_src('/images/picture.png/400x300-cropped')
+    def scaled_image_src(url)
+      hmac = HMAC::MD5.new("secret").update(url).to_s[0...8]
+      "http://images.myserver.com#{url}/#{hmac}"
+    end
+
+== TODO
+
+This thing is brand spankin new and is in flux - expect changes.
+
+Define a max image size (do not scale images over this size).
+Support DELETE requests to remove scaled images.
+Custom Read/Write methods.  Allow for more than just local storage.
+
+== Dependencies
+
+Sinatra
+RMagick
+Ruby-HMAC
+
+== License
 
 LICENSE:
 
 (The MIT License)
 
-Copyright © 2010 John Weir & Fame Driver LLC 
+Copyright © 2010 John Weir & Fame Driver LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

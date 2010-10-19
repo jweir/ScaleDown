@@ -2,9 +2,12 @@ source "http://rubygems.org"
 
 gem "sinatra"
 gem "rmagick"
-gem "thin"
 gem "rack"
 gem "ruby-hmac"
+
+group :development do
+  gem "thin"
+end
 
 group :test do
   gem "mocha"
