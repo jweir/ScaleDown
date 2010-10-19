@@ -1,3 +1,5 @@
+require 'pathname'
+
 class ScaleDown::Image
   include Magick
 
