@@ -1,11 +1,17 @@
+PATH
+  remote: .
+  specs:
+    scale_down (0.0.1)
+      rake (>= 0.8.7)
+      rmagick (>= 2.1)
+      rmagick (>= 2.1)
+      ruby-hmac (>= 0.4.0)
+      sinatra (>= 1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
-    columnize (0.3.1)
     contest (0.1.2)
-    daemons (1.1.0)
-    eventmachine (0.12.10)
-    linecache (0.43)
     mocha (0.9.8)
       rake
     rack (1.2.1)
@@ -13,29 +19,19 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rmagick (2.13.1)
-    ruby-debug (0.10.3)
-      columnize (>= 0.1)
-      ruby-debug-base (~> 0.10.3.0)
-    ruby-debug-base (0.10.3)
-      linecache (>= 0.3)
     ruby-hmac (0.4.0)
     sinatra (1.0)
       rack (>= 1.0)
-    thin (1.2.7)
-      daemons (>= 1.0.9)
-      eventmachine (>= 0.12.6)
-      rack (>= 1.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  contest
-  mocha
-  rack
-  rack-test
-  rmagick
-  ruby-debug
-  ruby-hmac
-  sinatra
-  thin
+  contest (>= 0.1.2)
+  mocha (= 0.9.8)
+  rack-test (= 0.5.6)
+  rake (>= 0.8.7)
+  rmagick (>= 2.1)
+  ruby-hmac (>= 0.4.0)
+  scale_down!
+  sinatra (>= 1.0)

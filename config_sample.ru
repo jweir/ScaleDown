@@ -1,4 +1,4 @@
-require 'lib/scale_down'
+require 'scale_down'
 
 ScaleDown::Scaler.hmac_key    = "secret"
 ScaleDown::Scaler.hmac_method = HMAC::MD5
