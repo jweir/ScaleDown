@@ -23,7 +23,11 @@ class ScaleDown::Scaler
 
     def valid_hmac?(params)
       str = [params[:path], "/", params[:filename], "/", params[:geometry]].join
-      hmac_method.new(hmac_key).update(str).to_s[0...hmac_length] == params[:hmac]
+      hmac(str) == params[:hmac]
+    end
+
+    def hmac(string)
+      hmac_method.new(hmac_key).update(string).to_s[0...hmac_length]
     end
   end
 
