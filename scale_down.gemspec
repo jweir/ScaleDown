@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["John Weir"]
   s.email       = ["john@famedriver.com"]
-  s.homepage    = "http://http://github.com/jweir/ScaleDown"
+  s.homepage    = "http://github.com/jweir/ScaleDown"
   s.summary     = %q{A Sinatra based server for quickly scaling and serving images. Nothing more.}
   s.description = %q{}
 
