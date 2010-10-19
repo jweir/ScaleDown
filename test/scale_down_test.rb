@@ -8,8 +8,8 @@ class ScaleDown::Test < Test::Unit::TestCase
   end
 
   def valid_get(path)
-    get "/#{path}/#{hmac(path, "secret")[0...8]}" 
-  end    
+    get "/#{path}/#{hmac(path, "secret")[0...8]}"
+  end
 
   context "integration test" do
     setup do
@@ -18,9 +18,9 @@ class ScaleDown::Test < Test::Unit::TestCase
       ScaleDown::Scaler.hmac_length = 8
       ScaleDown::Scaler.root_path   = "/tmp/scale_down"
 
-      FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1") 
+      FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1")
       FileUtils.cp tests_path("files/graphic.png"), "/tmp/scale_down/test_images/example_1/graphic.png"
-      FileUtils.mkdir_p("/tmp/scale_down/test_images/example_2") 
+      FileUtils.mkdir_p("/tmp/scale_down/test_images/example_2")
       FileUtils.cp tests_path("files/invalid_jpeg.jpg"), "/tmp/scale_down/test_images/example_2/invalid_jpeg.jpg"
     end
 
@@ -29,7 +29,7 @@ class ScaleDown::Test < Test::Unit::TestCase
     end
 
     should "get an image and scale it" do
-      valid_get 'test_images/example_1/graphic.png/400x300-cropped' 
+      valid_get 'test_images/example_1/graphic.png/400x300-cropped'
       assert_equal 301, last_response.status
       assert_equal "/test_images/example_1/scaled/graphic-400x300-cropped.png", last_response["Location"]
       assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/graphic-400x300-cropped.png")
@@ -48,4 +48,3 @@ class ScaleDown::Test < Test::Unit::TestCase
     end
   end
 end
-
