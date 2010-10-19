@@ -1,7 +1,3 @@
-require 'RMagick'
-require 'hmac-md5'
-require 'hmac-sha1'
-
 class ScaleDown::Scaler
 
   class << self

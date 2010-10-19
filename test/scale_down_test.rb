@@ -14,14 +14,14 @@ class ScaleDown::Test < Test::Unit::TestCase
   context "ScaleDown" do
     setup do
       ScaleDown.hmac_key    = "secret"
-      ScaleDown.hmac_method = HMAC::MD5
+      ScaleDown.hmac_method = HMAC::SHA1
       ScaleDown.hmac_length = 8
       ScaleDown.root_path   = "/tmp/scale_down"
     end
 
     context "HMAC" do
       setup do
-        hmac = HMAC::MD5.new("secret").update("file/path/filename.png/400x300-crop").to_s
+        hmac = HMAC::SHA1.new("secret").update("file/path/filename.png/400x300-crop").to_s
 
         @params = {
           :path     => "file/path",

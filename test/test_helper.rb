@@ -11,7 +11,7 @@ require 'forwardable'
 class Test::Unit::TestCase
 
   def hmac(path, secret)
-    hmac = HMAC::MD5.new(secret).update(path).to_s
+    hmac = HMAC::SHA1.new(secret).update(path).to_s
   end
 
   def tests_path(append)

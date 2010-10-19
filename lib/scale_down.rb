@@ -3,6 +3,8 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 require 'rubygems'
 require 'sinatra'
+require 'RMagick'
+require 'hmac-sha1'
 
 module ScaleDown
   require 'scale_down/version'
