@@ -8,48 +8,76 @@ Images are scaled based upon their URL. An HMAC signature is used to prevent mal
 
 For example
 
-    [  image server address  ][ image source ][ size ][ hmac  ]
-    http://images.example.com/images/logo.png/400x300/A3SDACEDF
+  [  image server address  ][ image source ][ size ][ hmac  ]
+  http://images.example.com/images/logo.png/400x300/A3SDACEDF
 
-    would redirect to (via 301) the scaled image
+  would redirect to (via 301) the scaled image
 
-    http://images.example.com/images/scaled/logo-400x300.png
+  http://images.example.com/images/scaled/logo-400x300.png
 
 To crop an image include the 'cropped' option
 
-    http://images.example.com/images/logo.png/400x300-cropped/A3SDACEDF
+  http://images.example.com/images/logo.png/400x300-cropped/A3SDACEDF
 
 Use 'auto' to have an image scale to one dimension or another.
 
 For example, to ensure an image is 300 pixels wide
 
-    http://images.example.com/images/logo.png/300xauto/A3SDACEDF
+  http://images.example.com/images/logo.png/300xauto/A3SDACEDF
 
+== Installation and Configuration
 
-== Configuration
+  gem install scale_down
 
-    ScaleDown::Scaler.hmac_key    = "secret"
-    ScaleDown::Scaler.hmac_method = HMAC::MD5
-    ScaleDown::Scaler.hmac_length = 8
-    ScaleDown::Scaler.root_path   = "/tmp/scale_down"
+Create a rackup file (config.ru)
 
-== Example URL generator
+  require 'scale_down'
 
-    require 'HMAC::MD5'
+  ScaleDown.tap do |config|
 
-    # ie scaled_image_src('/images/picture.png/400x300-cropped')
-    def scaled_image_src(url)
-      hmac = HMAC::MD5.new("secret").update(url).to_s[0...8]
-      "http://images.myserver.com#{url}/#{hmac}"
-    end
+    # This is the shared secret.  Use something strong
+    # Perhaps a visit to http://www.random.org/strings/?num=10&len=20&digits=on&upperalpha=on&format=html&rnd=new
+    config.hmac_key    = "secret"
+
+    # You can use a different HMAC, see the ruby-hmac gen
+    config.hmac_method = HMAC::SHA1
+
+    # The length of the HMAC signature to use
+    config.hmac_length = 8
+
+    # The root path to the images.  Use a symlink if it is helpful
+    config.root_path   = File.expand_path(File.dirname(__FILE__))+"/public"
+  end
+
+  run ScaleDown::Controller
+
+Start the server using whatever server you want.
+
+  thin start -p 3002 
+
+RMagick can be a bit tricky to install, these links[http://www.google.com/search?q=install+rmagick] might help.
+
+== Generating the URL 
+
+In your application with the images you will need to generate the URL for the image source.
+
+  require 'HMAC::SHA1'
+
+  # ie scaled_image_src('/images/picture.png/400x300-cropped')
+  def scaled_image_src(url)
+    hmac = HMAC::SHA1.new("secret").update(url).to_s[0...8]
+    "http://images.myserver.com#{url}/#{hmac}"
+  end
 
 == TODO
 
 This thing is brand spankin new and is in flux - expect changes.
 
 Define a max image size (do not scale images over this size).
+
 Support DELETE requests to remove scaled images.
-Custom Read/Write methods.  Allow for more than just local storage.
+
+Custom Read/Write methods to allow for more than just local storage.
 
 == Dependencies
 
