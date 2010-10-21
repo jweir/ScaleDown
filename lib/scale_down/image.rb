@@ -4,6 +4,11 @@ class ScaleDown::Image
   include Magick
 
   class << self
+
+		def max_size
+			10 * 1_048_576
+		end
+
     def scale(properties)
       new(properties).valid?
     end
@@ -20,7 +25,7 @@ class ScaleDown::Image
     @options  = properties[:options]
     @wrote    = false
 
-    save if @file
+    save if (@file && (File.size(properties[:file]) < self.class.max_size))
   end
 
   def load_file(filepath)

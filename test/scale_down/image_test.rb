@@ -72,6 +72,23 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
     end
   end
 
+	context "a file larger than the MAX_SIZE" do
+		setup do
+			File.expects(:size).with(tests_path("files/graphic.png")).returns(50 * 1_048_576)
+      @subject = create \
+        tests_path("files/graphic.png"),
+        tests_path("scaled_test/graphic_scaled.png"),
+        { :width => 100, :height => 105 }
+		end
+
+		should "return nil" do
+			assert !@subject
+		end
+
+    should "not create a scaled image" do
+      assert !File.exists?(tests_path("scaled_test/graphic_scaled.jpg"))
+    end
+	end
   context "cropping" do
     setup do
       @subject = create \
