@@ -43,7 +43,7 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
       assert_equal 400, geo.height
     end
 
-    should "auto scale" do
+    should "auto scale any one dimensions" do
       assert create \
         tests_path("files/graphic.png"),
         tests_path("scaled_test/graphic_scaled.png"),
@@ -52,6 +52,24 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
       image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.png")).first
       assert_equal 150, image.rows
       assert_equal 75, image.columns
+    end
+
+    should "return nil if both dimensions are 'auto'" do
+      assert_raises ScaleDown::InvalidGeometry do
+        ScaleDown::Image.geometry :width => "auto", :height => "auto"
+      end
+    end
+
+    should "raise an error if either dimension is outside of the ScaleDown.max_dimensions" do
+      ScaleDown.max_dimensions = [1200,1200]
+
+      assert_raises ScaleDown::InvalidGeometry do
+        ScaleDown::Image.geometry :width => 1300, :height => 900
+      end
+
+      assert_raises ScaleDown::InvalidGeometry do
+        ScaleDown::Image.geometry :width => 900, :height => 1300
+      end
     end
   end
 
@@ -72,23 +90,21 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
     end
   end
 
-	context "a file larger than the MAX_SIZE" do
-		setup do
-			File.expects(:size).with(tests_path("files/graphic.png")).returns(50 * 1_048_576)
-      @subject = create \
-        tests_path("files/graphic.png"),
-        tests_path("scaled_test/graphic_scaled.png"),
-        { :width => 100, :height => 105 }
-		end
-
-		should "return nil" do
-			assert !@subject
-		end
-
-    should "not create a scaled image" do
-      assert !File.exists?(tests_path("scaled_test/graphic_scaled.jpg"))
+  context "a file larger than the MAX_SIZE" do
+    setup do
+      File.expects(:size).with(tests_path("files/graphic.png")).at_least_once.returns(50 * 1_048_576)
     end
-	end
+
+    should "raise an exception" do
+      assert_raises ScaleDown::FileSizeTooLarge do
+        @subject = create \
+          tests_path("files/graphic.png"),
+          tests_path("scaled_test/graphic_scaled.png"),
+          { :width => 100, :height => 105 }
+      end
+    end
+  end
+
   context "cropping" do
     setup do
       @subject = create \

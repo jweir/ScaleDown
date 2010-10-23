@@ -1,20 +1,32 @@
 require 'pathname'
 
 class ScaleDown::Image
+
   include Magick
 
   class << self
 
-		def max_size
-			10 * 1_048_576
-		end
-
     def scale(properties)
       new(properties).valid?
     end
-    
+
     def geometry(properties)
-      Magick::Geometry.new(properties[:width], properties[:height], nil, nil, ">")
+      validate_geometry Magick::Geometry.new(properties[:width], properties[:height], nil, nil, ">")
+    end
+
+    # Ensures that the dimensions are not both 'auto' and within the max dimensions
+    def validate_geometry(geometry)
+      geometry.tap do |g|
+        total = g.width + g.height
+        raise ScaleDown::InvalidGeometry if total == 0
+        raise ScaleDown::InvalidGeometry if g.width > ScaleDown.max_dimensions[0] || g.height > ScaleDown.max_dimensions[1]
+      end
+    end
+
+    def validate_file_size(file_path)
+      unless File.size(file_path) < ScaleDown.max_file_size
+        raise ScaleDown::FileSizeTooLarge
+      end
     end
   end
 
@@ -25,16 +37,17 @@ class ScaleDown::Image
     @options  = properties[:options]
     @wrote    = false
 
-    save if (@file && (File.size(properties[:file]) < self.class.max_size))
+    save if @file
   end
 
-  def load_file(filepath)
+  def load_file(file_path)
+    self.class.validate_file_size(file_path)
     begin
-      Magick::Image.read(filepath).first
+      Magick::Image.read(file_path).first
     rescue Magick::ImageMagickError => e
       return nil
     end
-  end 
+  end
 
   def geometry(properties)
     self.class.geometry properties
@@ -46,7 +59,7 @@ class ScaleDown::Image
 
   protected
 
-    def save 
+    def save
       path = Pathname.new(@out).dirname.to_s
       FileUtils.mkdir_p path unless FileTest.directory? path
       resize
