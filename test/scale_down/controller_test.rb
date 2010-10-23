@@ -42,4 +42,5 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
       assert_match "Error", last_response.body
     end
   end
+
 end

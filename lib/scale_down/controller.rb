@@ -3,7 +3,6 @@ class ScaleDown::Controller < Sinatra::Application
   set :raise_errors, true
   set :show_exceptions, false
   set :static, true
-  set :public, "/Users/johnweir/Sites/famedriver/site/public"
 
   get '/' do
     "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"

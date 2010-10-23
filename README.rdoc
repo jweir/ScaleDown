@@ -47,6 +47,10 @@ Create a rackup file (config.ru)
 
     # The root path to the images.  Use a symlink if it is helpful
     config.root_path   = File.expand_path(File.dirname(__FILE__))+"/public"
+
+    # The public path for serving static(scaled) images, probably identical to the above.
+    config.public_path = File.expand_path(File.dirname(__FILE__))+"/public"
+
   end
 
   run ScaleDown::Controller
