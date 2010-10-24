@@ -8,11 +8,26 @@ class ScaleDown::Controller < Sinatra::Application
     "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"
   end
 
-  get '/*/:filename/:geometry/:hmac' do
+  # get '/*/:filename/:geometry/:hmac'
+  # is what I want, but
+  # this fails when the URL includes things like %23 (an encoded hash tag)
+  get '/*' do
+    parts = params[:splat].join("/").split("/")
+
+    params = {
+      :hmac     => parts.pop,
+      :geometry => parts.pop,
+      :filename => parts.pop,
+      :splat    => parts
+    }
+
     path, status = scaler(params)
+
+    # TODO Eh? Shouldn't it be if 301
     unless status == 403
-      redirect path, status
+      redirect URI.encode(path), status
     else
+      # TODO error messages which explain what went wrong
       [status, "Error: this image could not be processed"]
     end
   end
@@ -21,7 +36,7 @@ class ScaleDown::Controller < Sinatra::Application
   def scaler(params)
     ScaleDown::Scaler.process \
       :path     => params[:splat].join("/"),
-      :filename => params[:filename],
+      :filename => URI.decode(params[:filename]),
       :geometry => params[:geometry],
       :hmac     => params[:hmac]
   end
