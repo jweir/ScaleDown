@@ -69,8 +69,10 @@ In your application with the images you will need to generate the URL for the im
   # ie scaled_image_src('/images/picture.png/400x300-cropped')
   def scaled_image_src(url)
     hmac = HMAC::SHA1.new("secret").update(url).to_s[0...8]
-    "http://images.myserver.com#{url}/#{hmac}"
+    "http://images.myserver.com#{URI.encode(url)}/#{hmac}"
   end
+
+Files names might require URI encoding.  This should be done after generating the HMAC.
 
 Of course this could be done in PHP, Python, or whatever language your application is running.
 
