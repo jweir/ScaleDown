@@ -25,6 +25,10 @@ For example, to ensure an image is 300 pixels wide
 
   http://images.example.com/images/logo.png/300xauto/A3SDACEDF
 
+There is a very simple `/info` function for getting the image dimesions. It just returns a string with the WIDTHxHEIGHT.
+
+  http://images.exmaple.com/images/logo.png/info
+
 == Installation and Configuration
 
   gem install scale_down
