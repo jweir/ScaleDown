@@ -82,10 +82,6 @@ Of course this could be done in PHP, Python, or whatever language your applicati
 
 == TODO
 
-This thing is brand spankin new and is in flux - expect changes.
-
-Define a max image size (do not scale images over this size).
-
 Support DELETE requests to remove scaled images.
 
 Custom Read/Write methods to allow for more than just local storage.
