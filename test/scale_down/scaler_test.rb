@@ -122,4 +122,19 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
       end
     end
   end
+
+  context "#info" do
+    setup do
+      ScaleDown.root_path = File.join(File.expand_path(File.dirname(__FILE__)), "..")
+    end
+
+    should "return the width x height for an image" do
+      assert_equal "200x400", ScaleDown::Scaler.info("files/graphic.png")
+    end
+
+    should "return nil for a non-existant image" do
+      assert_equal nil, ScaleDown::Scaler.info("files/notthere.jpg")
+    end
+  end
+
 end

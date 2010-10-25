@@ -14,6 +14,16 @@ class ScaleDown::Scaler
         ["Error message", 403]
       end
     end
+
+    def info(relative_path)
+      path = [ScaleDown.root_path, relative_path].join("/")
+      if File.exists?(path)
+        image = Magick::Image.read(path).first
+        [image.columns, image.rows].join("x")
+      else
+        nil
+      end
+    end
   end
 
   def initialize(params)

@@ -8,7 +8,6 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
   end
 
   context "parsing a request" do
-
     should "have an image path" do
       ScaleDown::Scaler.expects(:process).with(
         :path     => "user/path",
@@ -22,7 +21,6 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
   end
 
   context "a valid request" do
-
     should "redirect to the image path" do
       ScaleDown::Scaler.expects(:process).returns ["/image-path", 301]
       get "/path/filename/geo/hmac"
@@ -33,6 +31,7 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
   end
 
   context "an invalid request" do
+
     should "respond with a 403 and error message" do
       ScaleDown::Scaler.expects(:process).returns ["Error description", 403]
 
@@ -43,4 +42,29 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
     end
   end
 
+  context "get dimensions" do
+    context "for image which exists" do
+      setup do
+        ScaleDown::Scaler.expects(:info).with("image/path/image.jpg").returns "400x300"
+      end
+
+      should "return the width and height as json" do
+        get "/image/path/image.jpg/info"
+
+        assert_equal 200, last_response.status
+        assert_equal "400x300", last_response.body
+      end
+    end
+
+    context "for a non-existant image" do
+      setup do
+        ScaleDown::Scaler.expects(:info).with("image/path/image.jpg").returns nil
+      end
+
+      should "respond with a 404" do
+        get "/image/path/image.jpg/info"
+        assert_equal 404, last_response.status
+      end
+    end
+  end
 end

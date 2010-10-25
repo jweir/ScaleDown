@@ -8,9 +8,17 @@ class ScaleDown::Controller < Sinatra::Application
     "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"
   end
 
+  get '/*/info' do
+    info = ScaleDown::Scaler.info(params[:splat].join("/"))
+    if info
+      [200, info]
+    else
+      [404, "Image not found"]
+    end
+  end
+
   # get '/*/:filename/:geometry/:hmac'
-  # is what I want, but
-  # this fails when the URL includes things like %23 (an encoded hash tag)
+  # is what I want, but this fails when the URL includes things like %23 (an encoded hash tag)
   get '/*' do
     parts = params[:splat].join("/").split("/")
 
