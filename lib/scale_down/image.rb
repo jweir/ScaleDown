@@ -37,7 +37,10 @@ class ScaleDown::Image
     @options  = properties[:options]
     @wrote    = false
 
-    save if @file
+    if @file
+      save
+      @file.destroy! #release the memory
+    end
   end
 
   def load_file(file_path)
