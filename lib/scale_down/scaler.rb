@@ -18,10 +18,8 @@ class ScaleDown::Scaler
     def info(relative_path)
       path = [ScaleDown.root_path, relative_path].join("/")
       if File.exists?(path)
-        image = Magick::Image.read(path).first
-        dim = [image.columns, image.rows].join("x")
-        image.destroy!
-        dim
+        image = MiniMagick::Image.open(path)
+        [image[:width],image[:height]].join('x')
       else
         nil
       end

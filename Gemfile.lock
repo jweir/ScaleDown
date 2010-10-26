@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    scale_down (0.0.4)
+    scale_down (0.1.0)
+      mini_magick (>= 2.3)
       rmagick (>= 2.1)
       ruby-hmac (>= 0.4.0)
       sinatra (>= 1.0)
@@ -10,6 +11,8 @@ GEM
   remote: http://rubygems.org/
   specs:
     contest (0.1.2)
+    mini_magick (2.3)
+      subexec (~> 0.0.4)
     mocha (0.9.8)
       rake
     rack (1.2.1)
@@ -20,12 +23,14 @@ GEM
     ruby-hmac (0.4.0)
     sinatra (1.0)
       rack (>= 1.0)
+    subexec (0.0.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   contest (>= 0.1.2)
+  mini_magick (>= 2.3)
   mocha (= 0.9.8)
   rack-test (= 0.5.6)
   rmagick (>= 2.1)
