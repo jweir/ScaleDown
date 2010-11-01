@@ -28,7 +28,6 @@ class ScaleDown::Controller < Sinatra::Application
       :filename => parts.pop,
       :splat    => parts
     }
-
     path, status = scaler(params)
 
     # TODO Eh? Shouldn't it be if 301
@@ -44,7 +43,7 @@ class ScaleDown::Controller < Sinatra::Application
   def scaler(params)
     ScaleDown::Scaler.process \
       :path     => params[:splat].join("/"),
-      :filename => URI.decode(params[:filename]),
+      :filename => params[:filename],
       :geometry => params[:geometry],
       :hmac     => params[:hmac]
   end
