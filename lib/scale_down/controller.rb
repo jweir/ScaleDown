@@ -9,7 +9,7 @@ class ScaleDown::Controller < Sinatra::Application
   end
 
   get '/*/info' do
-    info = ScaleDown::Scaler.info(params[:splat].join("/"))
+    info = ScaleDown::Dispatcher.info(params[:splat].join("/"))
     if info
       [200, info]
     else
@@ -28,7 +28,7 @@ class ScaleDown::Controller < Sinatra::Application
       :filename => parts.pop,
       :splat    => parts
     }
-    path, status = scaler(params)
+    path, status = dispatch(params)
 
     # TODO Eh? Shouldn't it be if 301
     unless status == 403
@@ -40,8 +40,8 @@ class ScaleDown::Controller < Sinatra::Application
   end
 
   protected
-  def scaler(params)
-    ScaleDown::Scaler.process \
+  def dispatch(params)
+    ScaleDown::Dispatcher.process \
       :path     => params[:splat].join("/"),
       :filename => params[:filename],
       :geometry => params[:geometry],

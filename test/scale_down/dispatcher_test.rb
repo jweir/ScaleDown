@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__))+'/../test_helper'
 
-class ScaleDown::Scaler::Test < Test::Unit::TestCase
+class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
 
-  context "Scaler::Test" do
+  context "Dispatcher::Test" do
     setup do
       ScaleDown.hmac_key    = "secret"
       ScaleDown.hmac_method = HMAC::SHA1
@@ -21,51 +21,51 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
 
     context "instance" do
       setup do
-        @scaler = ScaleDown::Scaler.new @params
+        @dispatcher = ScaleDown::Dispatcher.new @params
       end
 
       should "validate the HMAC" do
         ScaleDown.expects(:valid_hmac?).with(@params).returns true
-        assert @scaler.valid_hmac?
+        assert @dispatcher.valid_hmac?
       end
 
       should "determine root file existance" do
         File.expects(:exists?).with("/tmp/file/path/filename.png").returns true
-        assert @scaler.root_file_exists?
+        assert @dispatcher.root_file_exists?
       end
 
       should "deterimine the scaled image's existance" do
         File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns true
-        assert @scaler.scaled_file_exists?
+        assert @dispatcher.scaled_file_exists?
       end
 
       should "parse the geometry params into options" do
-        assert_equal({:width => 400, :height => 300, :crop => true}, @scaler.image_options)
+        assert_equal({:width => 400, :height => 300, :crop => true}, @dispatcher.image_options)
       end
 
       should "have a redirect path" do
-        assert_equal "/file/path/scaled/filename-400x300-crop.png", @scaler.redirect_path
+        assert_equal "/file/path/scaled/filename-400x300-crop.png", @dispatcher.redirect_path
       end
 
       should "process the image" do
         ScaleDown::Image.expects(:scale).with(
-          :file    => @scaler.root_path,
-          :out     => @scaler.scaled_file_path,
-          :options => @scaler.image_options).returns true
+          :file    => @dispatcher.root_path,
+          :out     => @dispatcher.scaled_file_path,
+          :options => @dispatcher.image_options).returns true
 
-          assert @scaler.scale
+          assert @dispatcher.scale
       end
 
       should "default to a jpg out file" do
         ["jpg", "tga", "tif", "pdf", "psd"].each do |ext|
-          scaler = ScaleDown::Scaler.new @params.merge(:filename => "test.#{ext}")
-          assert_match /\.jpg$/, scaler.scaled_file_path
+          dispatcher = ScaleDown::Dispatcher.new @params.merge(:filename => "test.#{ext}")
+          assert_match /\.jpg$/, dispatcher.scaled_file_path
         end
       end
 
       should "use a png for png graphics" do
-        scaler = ScaleDown::Scaler.new @params.merge(:filename => "test.png")
-        assert_match /\.png$/, scaler.scaled_file_path
+        dispatcher = ScaleDown::Dispatcher.new @params.merge(:filename => "test.png")
+        assert_match /\.png$/, dispatcher.scaled_file_path
       end
     end
 
@@ -84,18 +84,18 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
           end
 
           should "scale the image" do
-            ScaleDown::Scaler.process(@params)
+            ScaleDown::Dispatcher.process(@params)
           end
 
           should "return a 301 redirect to the processed image's URL" do
-            assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Scaler.process(@params)
+            assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Dispatcher.process(@params)
           end
         end
 
         context "without a valid HMAC" do
           should "return a 403 Forbidden response" do
             ScaleDown.expects(:valid_hmac?).returns false
-            assert_equal 403, ScaleDown::Scaler.process(@params)[1]
+            assert_equal 403, ScaleDown::Dispatcher.process(@params)[1]
           end
         end
       end
@@ -107,7 +107,7 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
         end
 
         should "return a 301 redirect to the processed image's URL" do
-          assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Scaler.process(@params)
+          assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Dispatcher.process(@params)
         end
       end
 
@@ -117,7 +117,7 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
         end
 
         should "return a 404" do
-          assert_equal 404, ScaleDown::Scaler.process(@params)[1]
+          assert_equal 404, ScaleDown::Dispatcher.process(@params)[1]
         end
       end
     end
@@ -129,11 +129,11 @@ class ScaleDown::Scaler::Test < Test::Unit::TestCase
     end
 
     should "return the width x height for an image" do
-      assert_equal "200x400", ScaleDown::Scaler.info("files/graphic.png")
+      assert_equal "200x400", ScaleDown::Dispatcher.info("files/graphic.png")
     end
 
     should "return nil for a non-existant image" do
-      assert_equal nil, ScaleDown::Scaler.info("files/notthere.jpg")
+      assert_equal nil, ScaleDown::Dispatcher.info("files/notthere.jpg")
     end
   end
 

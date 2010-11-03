@@ -1,15 +1,17 @@
-class ScaleDown::Scaler
+class ScaleDown::Dispatcher
+
+  # Controls flow to ensure that the file exists and has the proper HMAC signature.
 
   class << self
 
     def process(params)
-      scaler = new(params)
+      dispatcher = new(params)
 
-      return ["Missing file", 404] unless scaler.root_file_exists?
-      return [scaler.redirect_path, 301] if scaler.scaled_file_exists?
+      return ["Missing file", 404] unless dispatcher.root_file_exists?
+      return [dispatcher.redirect_path, 301] if dispatcher.scaled_file_exists?
 
-      if scaler.valid_hmac? && scaler.scale
-        [scaler.redirect_path, 301]
+      if dispatcher.valid_hmac? && dispatcher.scale
+        [dispatcher.redirect_path, 301]
       else
         ["Error message", 403]
       end
