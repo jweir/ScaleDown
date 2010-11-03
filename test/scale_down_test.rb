@@ -65,10 +65,10 @@ class ScaleDown::Test < Test::Unit::TestCase
         assert_equal 404, last_response.status
       end
 
-      should "get an invalid image and return a 403" do
+      should "get an invalid image and return a 500" do
         valid_get '/test_images/example_2/invalid_jpeg.jpg/400x300-cropped'
 
-        assert_equal 403, last_response.status
+        assert_equal 500, last_response.status
         assert !File.exists?("/tmp/scale_down/test_images/example_2/scaled/invalid_jpeg-400x300-cropped.jpg")
       end
     end

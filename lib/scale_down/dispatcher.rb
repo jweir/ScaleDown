@@ -10,11 +10,10 @@ class ScaleDown::Dispatcher
       return ["Missing file", 404] unless dispatcher.root_file_exists?
       return [dispatcher.redirect_path, 301] if dispatcher.scaled_file_exists?
 
-      if dispatcher.valid_hmac? && dispatcher.scale
-        [dispatcher.redirect_path, 301]
-      else
-        ["Error message", 403]
-      end
+      return ["Invalid HMAC signature", 403] unless dispatcher.valid_hmac?
+      return ["File failed to scale. The file may be corrupt.", 500] unless dispatcher.scale
+
+      [dispatcher.redirect_path, 301]
     end
 
     def info(relative_path)
