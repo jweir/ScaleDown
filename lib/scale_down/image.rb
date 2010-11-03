@@ -31,24 +31,23 @@ class ScaleDown::Image
   end
 
   def initialize(properties = {})
-    @file     = load_file(properties[:file])
-    @out      = properties[:out]
-    @geometry = geometry(properties[:options])
-    @options  = properties[:options]
-    @wrote    = false
+    load_file(properties[:file]) do |file|
+      resize(file, properties[:options])
+      fix_color_space(file)
 
-    if @file
-      save
-      @file.destroy! #release the memory
+      @valid = write(file, properties[:out])
     end
   end
 
   def load_file(file_path)
     self.class.validate_file_size(file_path)
     begin
-      Magick::Image.read(file_path).first
+      file = Magick::Image.read(file_path).first
+      unless file.nil?
+        yield file
+        file.destroy!
+      end
     rescue Magick::ImageMagickError => e
-      return nil
     end
   end
 
@@ -57,37 +56,33 @@ class ScaleDown::Image
   end
 
   def valid?
-    @wrote
+    @valid ||= false
   end
 
   protected
 
-    def save
-      path = Pathname.new(@out).dirname.to_s
-      FileUtils.mkdir_p path unless FileTest.directory? path
-      resize
-      fix_color_space
-      write
-    end
-
-    def fix_color_space
-      if @file.colorspace == Magick::CMYKColorspace
-        @file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
-        @file = @file.quantize 2**24, Magick::RGBColorspace
+    def fix_color_space(file)
+      if file.colorspace == Magick::CMYKColorspace
+        file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
+        file = file.quantize 2**24, Magick::RGBColorspace
       end
     end
 
-    def resize
-      @file.auto_orient!
-      if @options[:crop]
-        @file.crop_resized!(@geometry.width, @geometry.height, Magick::CenterGravity)
+    def resize(file, properties)
+      geo = geometry(properties)
+      file.auto_orient!
+      if properties[:crop]
+        file.crop_resized!(geo.width, geo.height, Magick::CenterGravity)
       else
-        @file.change_geometry!(@geometry) {|cols, rows, img| img.resize!(cols,rows)}
+        file.change_geometry!(geo) {|cols, rows, img| img.resize!(cols,rows)}
       end
     end
 
-    def write
-      @file.write(@out) { self.quality = 85 }
-      @wrote = true
+    def write(file, file_out)
+      path = Pathname.new(file_out).dirname.to_s
+      FileUtils.mkdir_p path unless FileTest.directory? path
+
+      file.write(file_out) { self.quality = 85 }
+      true
     end
 end

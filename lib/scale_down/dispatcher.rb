@@ -16,6 +16,7 @@ class ScaleDown::Dispatcher
       [dispatcher.redirect_path, 301]
     end
 
+    # TODO return a JSON response with a full set of image details
     def info(relative_path)
       path = [ScaleDown.root_path, relative_path].join("/")
       if File.exists?(path)

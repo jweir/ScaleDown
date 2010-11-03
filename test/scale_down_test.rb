@@ -40,7 +40,6 @@ class ScaleDown::Test < Test::Unit::TestCase
       end
     end
 
-
     context "integration test" do
       setup do
         FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1")
