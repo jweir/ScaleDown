@@ -3,3 +3,4 @@ pkg/*
 .bundle
 gen_tags
 public
+config.ru
