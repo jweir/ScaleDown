@@ -11,7 +11,7 @@ class ScaleDown::Test < Test::Unit::TestCase
     ScaleDown.hmac_key    = "secret"
     ScaleDown.hmac_method = HMAC::SHA1
     ScaleDown.hmac_length = 8
-    ScaleDown.root_path   = "/tmp"
+    ScaleDown.public_path = "/tmp"
   end
 
   should "create a URL with the HMAC signature" do

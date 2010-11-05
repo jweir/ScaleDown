@@ -29,9 +29,6 @@ module ScaleDown
       ScaleDown::Controller.public = str
     end
 
-    # The path the root of the images directory
-    attr_accessor :root_path
-
     # Defaults
     ScaleDown.max_file_size  = 10 * 1_048_576
     ScaleDown.max_dimensions = [1200,1200]

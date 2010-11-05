@@ -18,7 +18,7 @@ class ScaleDown::Dispatcher
 
     # TODO return a JSON response with a full set of image details
     def info(relative_path)
-      path = [ScaleDown.root_path, relative_path].join("/")
+      path = [ScaleDown.public_path, relative_path].join("/")
       if File.exists?(path)
         image = MiniMagick::Image.open(path)
         [image[:width],image[:height]].join('x')
@@ -64,11 +64,11 @@ class ScaleDown::Dispatcher
   end
 
   def root_path
-    File.join(ScaleDown.root_path, @params[:path], @params[:filename])
+    File.join(ScaleDown.public_path, @params[:path], @params[:filename])
   end
 
   def scaled_file_path
-    File.join(ScaleDown.root_path, redirect_path)
+    File.join(ScaleDown.public_path, redirect_path)
   end
 
   def scaled_filename

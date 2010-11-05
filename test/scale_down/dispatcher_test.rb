@@ -7,7 +7,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       ScaleDown.hmac_key    = "secret"
       ScaleDown.hmac_method = HMAC::SHA1
       ScaleDown.hmac_length = 8
-      ScaleDown.root_path   = "/tmp"
+      ScaleDown.public_path = "/tmp"
 
       hmac = HMAC::SHA1.new("secret").update("file/path/filename.png/400x300-crop").to_s
 
@@ -125,7 +125,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
 
   context "#info" do
     setup do
-      ScaleDown.root_path = File.join(File.expand_path(File.dirname(__FILE__)), "..")
+      ScaleDown.public_path = File.join(File.expand_path(File.dirname(__FILE__)), "..")
     end
 
     should "return the width x height for an image" do

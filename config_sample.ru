@@ -12,9 +12,6 @@ ScaleDown.tap do |config|
   # The length of the HMAC signature to use
   config.hmac_length = 8
 
-  # The root path to the images
-  config.root_path   = File.expand_path(File.dirname(__FILE__))+"/public"
-
   # The location of the public directory for serving static files
   # This might be redudant since it will always, maybe, maybe not, be the same as root_path
   config.public_path = "#{File.expand_path(File.dirname(__FILE__))}/public"
