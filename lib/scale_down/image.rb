@@ -2,6 +2,14 @@ require 'pathname'
 
 class ScaleDown::Image
 
+  # This class should only
+  #   load an image
+  #   ensure an RGB colorspace
+  #   correct the orientation
+  #   scale the image to the dimensions
+  #   save the scaled image to the specified path
+  #
+  # This is not the place for any other logic.
   include Magick
 
   class << self
