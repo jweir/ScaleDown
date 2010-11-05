@@ -65,15 +65,19 @@ Start the server using whatever server you want.
 
 In your application with the images you will need to generate the URL for the image source.
 
+Filenames can have characters (# ? /) which may need to be escaped. So it is important that you CGI escape them.
+
+They should be CGI escaped AFTER the HMAC is generated, and only escape the filename, not the path or options.
+
+  # Example ruby function to generate signed URL
   require 'HMAC::SHA1'
+  require 'cgi'
 
-  # ie scaled_image_src('/images/picture.png/400x300-cropped')
-  def scaled_image_src(url)
-    hmac = HMAC::SHA1.new("secret").update(url).to_s[0...8]
-    "http://images.myserver.com#{URI.encode(url)}/#{hmac}"
+  # ie signed_image_url('/images/picture.png/400x300-cropped')
+  def signed_image_url(path, filename, options)
+    hmac = HMAC::SHA1.new("secret").update([path, filename, options].join("/")).to_s[0...8]
+    "http://images.myserver.com#{[path, CGI.escape(filename), options, hmac].join("/")}"
   end
-
-Files names might require URI encoding.  This should be done after generating the HMAC.
 
 Of course this could be done in PHP, Python, or whatever language your application is running.
 
