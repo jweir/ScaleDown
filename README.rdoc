@@ -6,24 +6,37 @@ Supports cropping images and converts CMYK to RGB.
 
 Images are scaled based upon their URL. An HMAC signature is used to prevent malicious scaling of images (ie: bring your server down.)
 
+The schema is simple
+
+  http://:server/:geometry/:path_to_file/:filename?:hmac_signature
+
+  :server is the address running ScaleDown
+
+  :geometry is widtxheight.  There can be an optional `-crop` flag attached.
+
+  :path_to_file is the public path to the file
+
+  :filename is the name of the image to scale
+
+  :hmac_signature is security measure to validate the request
+
 For example
 
-  [  image server address  ][ image source ][ size ][ hmac  ]
-  http://images.example.com/images/logo.png/400x300/A3SDACEDF
+  http://images.example.com/400x300/images/logo.png?A3SDACEDF
 
   would 301 redirect to the scaled image
 
-  http://images.example.com/images/scaled/logo-400x300.png
+  http://images.example.com/images/scaled/400x300/logo.png
 
 To crop an image include the 'cropped' option
 
-  http://images.example.com/images/logo.png/400x300-cropped/A3SDACEDF
+  http://images.example.com/400x300-cropped/images/logo.png?A3SDACEDF
 
 Use 'auto' to have an image scale to one dimension or another.
 
 For example, to ensure an image is 300 pixels wide
 
-  http://images.example.com/images/logo.png/300xauto/A3SDACEDF
+  http://images.example.com/300xauto/images/logo.png/?A3SDACEDF
 
 There is a very simple `/info` function for getting the image dimesions. It just returns a string with the WIDTHxHEIGHT.
 
@@ -63,20 +76,20 @@ Start the server using whatever server you want.
 
 == Generating the URL
 
-In your application with the images you will need to generate the URL for the image source.
+In your application you will need to generate the URL for the image source.
 
-Filenames can have characters (# ? /) which may need to be escaped. So it is important that you CGI escape them.
+Filenames can have characters (# ? /) which may need to be escaped.
 
-They should be CGI escaped AFTER the HMAC is generated, and only escape the filename, not the path or options.
+Filenames should be CGI escaped before the HMAC is generated, and only escape the filename, not the path or options.
 
   # Example ruby function to generate signed URL
   require 'HMAC::SHA1'
   require 'cgi'
 
-  # ie signed_image_url('/images/picture.png/400x300-cropped')
+  # ie signed_image_url('images', 'picture.png', '400x300-cropped')
   def signed_image_url(path, filename, options)
-    hmac = HMAC::SHA1.new("secret").update([path, filename, options].join("/")).to_s[0...8]
-    "http://images.myserver.com#{[path, CGI.escape(filename), options, hmac].join("/")}"
+    hmac = HMAC::SHA1.new("secret").update("/#{options}/#{path}/#{filename}").to_s[0..8]
+    "http://images.myserver.com/#{options}/#{path}/#{CGI.escape(filename)}?#{hmac}"
   end
 
 Of course this could be done in PHP, Python, or whatever language your application is running.

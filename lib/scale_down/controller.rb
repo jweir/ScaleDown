@@ -17,17 +17,18 @@ class ScaleDown::Controller < Sinatra::Application
     end
   end
 
-  # get '/*/:filename/:geometry/:hmac'
+  # get '/*/:filename/:geometry?:hmac'
   # is what I want, but this fails when the URL includes things like %23 (an encoded hash tag)
   get '/*' do
     parts = params[:splat].join("/").split("/")
 
     params = {
-      :hmac     => parts.pop,
-      :geometry => parts.pop,
+      :hmac     => request.env["QUERY_STRING"],
+      :geometry => parts.shift,
       :filename => parts.pop,
       :splat    => parts
     }
+
     path, status = dispatch(params)
 
     # TODO Eh? Shouldn't it be if 301

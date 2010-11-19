@@ -16,14 +16,14 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
         :hmac     => "HMAC").
       returns ["path","status"]
 
-      get '/user/path/filename.png/400x300-cropped-grayscale/HMAC'
+      get '/400x300-cropped-grayscale/user/path/filename.png?HMAC'
     end
   end
 
   context "a valid request" do
     should "redirect to the image path" do
       ScaleDown::Dispatcher.expects(:process).returns ["/image-path", 301]
-      get "/path/filename/geo/hmac"
+      get "/geo/path/filename?hmac"
 
       assert_equal 301, last_response.status
       assert_equal "/image-path", last_response["Location"]
@@ -35,7 +35,7 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
     should "respond with a 403 and error message" do
       ScaleDown::Dispatcher.expects(:process).returns ["Error description", 403]
 
-      get "/path/filename/geo/hmac"
+      get "/geo/path/filename?hmac"
 
       assert_equal 403, last_response.status
       assert_match "Error", last_response.body

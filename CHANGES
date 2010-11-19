@@ -1,0 +1,5 @@
+== 2010-11-19 ==
+
+Changed to url schema to be
+
+/geometry/path_to_file?HMAC
