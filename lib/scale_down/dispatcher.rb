@@ -7,6 +7,8 @@ class ScaleDown::Dispatcher
     def process(params)
       dispatcher = new(params)
 
+      ScaleDown.logger.info "Dipatcher#process #{dispatcher.root_path}"
+
       return ["Missing file", 404] unless dispatcher.root_file_exists?
       return [dispatcher.redirect_path, 301] if dispatcher.scaled_file_exists?
 

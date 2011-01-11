@@ -3,6 +3,7 @@ $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
 require 'rubygems'
 require 'sinatra'
+require 'logger'
 require 'RMagick'
 require 'mini_magick'
 require 'hmac-sha1'

@@ -33,5 +33,12 @@ module ScaleDown
     ScaleDown.max_file_size  = 10 * 1_048_576
     ScaleDown.max_dimensions = [1200,1200]
 
+    def logger=(logger)
+      @logger = logger
+    end
+
+    def logger
+      @logger || Logger.new("/dev/null")
+    end
   end
 end

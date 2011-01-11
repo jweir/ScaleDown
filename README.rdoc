@@ -65,6 +65,8 @@ Create a rackup file (config.ru)
     # The path to the public directory
     config.public_path = File.expand_path(File.dirname(__FILE__))+"/public"
 
+    # Optional logger
+    config.logger = Logger.new("/tmp/logfile.log")
   end
 
   run ScaleDown::Controller

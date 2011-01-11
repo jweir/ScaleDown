@@ -31,7 +31,7 @@ class ScaleDown::Controller < Sinatra::Application
 
     path, status = dispatch(params)
 
-    # TODO Eh? Shouldn't it be if 301
+    ScaleDown.logger.info "Controller#get #{path} #{status}"
     unless status == 403
       redirect URI.encode(path), status
     else
