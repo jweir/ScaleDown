@@ -72,14 +72,14 @@ Your application will need to generate the image's URL and HMAC signature.
   require 'cgi'
 
   # ie signed_image_url('images', 'picture.png', '400x300-cropped')
-  def signed_image_url(path, filename, options)
-    hmac = HMAC::SHA1.new("secret").update("/#{options}/#{path}/#{filename}").to_s[0..8]
-    "http://images.myserver.com/#{options}/#{path}/#{CGI.escape(filename)}?#{hmac}"
+  def signed_image_url(path, filename, geometry)
+    hmac = HMAC::SHA1.new("secret").update("/#{geometry}/#{path}/#{filename}").to_s[0..8]
+    "http://images.myserver.com/#{geometry}/#{path}/#{CGI.escape(filename)}?#{hmac}"
   end
 
 Of course this could be done in PHP, Node, Python, or other languages.
 
-== KNOWN ISSUES
+== Known Issues
 
 Pluses in filenames will not route properly.  Filenames need to have these removed or replaced.
 
