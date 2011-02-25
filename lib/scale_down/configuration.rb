@@ -24,6 +24,7 @@ module ScaleDown
     # The location of the public path for you application
     # +Must be set+
     attr_accessor :public_path
+
     def public_path=(str)
       @public_path = str
       ScaleDown::Controller.public = str

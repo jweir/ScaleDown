@@ -12,11 +12,11 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
       ScaleDown::Dispatcher.expects(:process).with(
         :path     => "user/path",
         :filename => "filename.png",
-        :geometry => "400x300-cropped-grayscale",
+        :geometry => "400x300-crop-grayscale",
         :hmac     => "HMAC").
       returns ["path","status"]
 
-      get '/400x300-cropped-grayscale/user/path/filename.png?HMAC'
+      get '/400x300-crop-grayscale/user/path/filename.png?HMAC'
     end
   end
 

@@ -1,26 +1,26 @@
 = ScaleDown
 
-A RESTful server for quickly scaling and serving images. Nothing more.
+A Sinatra web server for scaling and serving images on demand, nothing more.
+
+Images are scaled based upon their URL. An HMAC signature is used to prevent unauthorized scaling of images.
 
 Supports cropping images and converts CMYK to RGB.
 
-Images are scaled based upon their URL. An HMAC signature is used to prevent malicious scaling of images (ie: bring your server down.)
+The URL schema
 
-The schema is simple
+  http://:host/:geometry/:path_to_file/:filename?:hmac_signature
 
-  http://:server/:geometry/:path_to_file/:filename?:hmac_signature
+  :host is the address running ScaleDown
 
-  :server is the address running ScaleDown
+  :geometry is width x height and an optional `-crop`
 
-  :geometry is widtxheight.  There can be an optional `-crop` flag attached.
-
-  :path_to_file is the public path to the file
+  :path_to_file is the public path of the original file
 
   :filename is the name of the image to scale
 
-  :hmac_signature is security measure to validate the request
+  :hmac_signature a security measure to validate the request
 
-For example
+Example
 
   http://images.example.com/400x300/images/logo.png?A3SDACEDF
 
@@ -28,13 +28,13 @@ For example
 
   http://images.example.com/images/scaled/400x300/logo.png
 
-To crop an image include the 'cropped' option
+To crop an image include the 'crop' option.  The image will be scaled and cropped to fit the geometry.
 
-  http://images.example.com/400x300-cropped/images/logo.png?A3SDACEDF
+  http://images.example.com/400x300-crop/images/logo.png?A3SDACEDF
 
-Use 'auto' to have an image scale to one dimension or another.
+Using 'auto' as a dimension will fit the image to other dimension.
 
-For example, to ensure an image is 300 pixels wide
+For example, to ensure an image is 300 pixels wide set the height to auto
 
   http://images.example.com/300xauto/images/logo.png/?A3SDACEDF
 
@@ -46,43 +46,26 @@ There is a very simple `/info` function for getting the image dimesions. It just
 
   gem install scale_down
 
-Create a rackup file (config.ru)
+Create a rackup file (config.ru). See http://rubydoc.info/gems/scale_down/0.2.1/ScaleDown more options
 
+  require 'rubygems'
   require 'scale_down'
 
   ScaleDown.tap do |config|
-
-    # This is the shared secret.  Use something strong
-    # Perhaps a visit to http://www.random.org/strings/?num=10&len=20&digits=on&upperalpha=on&format=html&rnd=new
+    # Shared secret for generating the HMAC signature
     config.hmac_key    = "secret"
 
-    # You can use a different HMAC, see the ruby-hmac gen
-    config.hmac_method = HMAC::SHA1
-
-    # The length of the HMAC signature to use
-    config.hmac_length = 8
-
-    # The path to the public directory
+    # Path to the public directory
     config.public_path = File.expand_path(File.dirname(__FILE__))+"/public"
-
-    # Optional logger
-    config.logger = Logger.new("/tmp/logfile.log")
   end
 
   run ScaleDown::Controller
 
-Start the server using whatever server you want.
+Configure Nginx, Apache, etc to run the server. I use Passenger http://www.modrails.com/
 
-  thin start -p 3002
+=== Generating the URL
 
-
-== Generating the URL
-
-In your application you will need to generate the URL for the image source.
-
-Filenames can have characters (# ? /) which may need to be escaped.
-
-Filenames should be CGI escaped before the HMAC is generated, and only escape the filename, not the path or options.
+Your application will need to generate the image's URL and HMAC signature.
 
   # Example ruby function to generate signed URL
   require 'HMAC::SHA1'
@@ -94,13 +77,19 @@ Filenames should be CGI escaped before the HMAC is generated, and only escape th
     "http://images.myserver.com/#{options}/#{path}/#{CGI.escape(filename)}?#{hmac}"
   end
 
-Of course this could be done in PHP, Python, or whatever language your application is running.
+Of course this could be done in PHP, Node, Python, or other languages.
+
+== KNOWN ISSUES
+
+Pluses in filenames will not route properly.  Filenames need to have these removed or replaced.
 
 == TODO
 
-Support DELETE requests to remove scaled images.
-
 Custom Read/Write methods to allow for more than just local storage.
+
+Examples using Node.js
+
+There is an issue on some systems with pluses in filenames.
 
 == Dependencies
 
@@ -116,7 +105,7 @@ LICENSE:
 
 (The MIT License)
 
-Copyright © 2010 John Weir & Fame Driver LLC
+Copyright © 2011 John Weir & Fame Driver LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
