@@ -4,12 +4,15 @@ module ScaleDown
     # Defines the method to use for generating an HMAC
     # For example
     #   ScaleDown.hmac_method = HMAC::SHA2
+    # Default HMAC::SHA1
     attr_accessor :hmac_method
+    ScaleDown.hmac_method = HMAC::SHA1
 
     # The shared secret for generating the hmac
     attr_accessor :hmac_key
 
-    # How many characters of the HMAC are used for validation, default of 8
+    # How many characters of the HMAC are used for validation
+    # Default 8
     attr_accessor :hmac_length
     ScaleDown.hmac_length = 8
 
@@ -17,10 +20,12 @@ module ScaleDown
     # [800,600] would limit scaling operations to 800px wide by 600px tall
     # Default [1200,1200]
     attr_accessor :max_dimensions
+    ScaleDown.max_dimensions = [1200,1200]
 
     # The max file size allowed for the file to be scaled, in bytes
-    # Defaults to  10 * 1_048_576
+    # Defaults 10 megabytes
     attr_accessor :max_file_size
+    ScaleDown.max_file_size  = 10 * 1_048_576
 
     # The location of the public path for you application
     # +Must be set+
@@ -30,10 +35,6 @@ module ScaleDown
       @public_path = str
       ScaleDown::Controller.public = str
     end
-
-    # Defaults
-    ScaleDown.max_file_size  = 10 * 1_048_576
-    ScaleDown.max_dimensions = [1200,1200]
 
     def logger=(logger)
       @logger = logger
