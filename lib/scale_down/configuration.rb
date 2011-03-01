@@ -9,8 +9,9 @@ module ScaleDown
     # The shared secret for generating the hmac
     attr_accessor :hmac_key
 
-    # How many characters of the HMAC are used for validation
+    # How many characters of the HMAC are used for validation, default of 8
     attr_accessor :hmac_length
+    ScaleDown.hmac_length = 8
 
     # An array of the max width and height an image can be scaled, in pixels.
     # [800,600] would limit scaling operations to 800px wide by 600px tall
