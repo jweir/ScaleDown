@@ -135,16 +135,24 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
     end
   end
 
-  context "color correction" do
-    setup do
-      @subject = create \
+  context "CMYK images" do
+    should "be converted to RGB" do
+      create \
         tests_path("files/cmyk.tif"),
         tests_path("scaled_test/graphic_scaled.jpg"),
         { :width => "auto", :height => 200}
+
+      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+      assert_equal Magick::RGBColorspace, image.colorspace
     end
 
-    should "be automatic" do
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+    should "convert JPGs to RGB JPEGS" do
+      create \
+        tests_path("files/cmyk_gray.jpg"),
+        tests_path("scaled_test/graphic_scaled_2.jpg"),
+        { :width => "auto", :height => 200}
+
+      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled_2.jpg")).first
       assert_equal Magick::RGBColorspace, image.colorspace
     end
   end

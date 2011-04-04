@@ -26,7 +26,7 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
       get "/geo/path/filename?hmac"
 
       assert_equal 301, last_response.status
-      assert_equal "/image-path", last_response["Location"]
+      assert_equal "http://example.org/image-path", last_response["Location"]
     end
   end
 
