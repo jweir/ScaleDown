@@ -22,8 +22,9 @@ class ScaleDown::Dispatcher
     def info(relative_path)
       path = [ScaleDown.public_path, relative_path].join("/")
       if File.exists?(path)
-        image = MiniMagick::Image.open(path)
-        [image[:width],image[:height]].join('x')
+        GC.start
+        image = Magick::Image.read(path).first
+        [image.columns, image.rows].join('x')
       else
         nil
       end

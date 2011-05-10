@@ -1,3 +1,10 @@
+== 2011-05-08 ==
+Removed MiniMagick and using RMagick
+MiniMagick was not returning the dimensions on some images. I was able to get RMagick to work without leaking memory
+
+== 2011-04-03 ==
+Fixed CMYK conversion of gray scale images
+
 == 2010-11-19 ==
 
 Changed to url schema to be

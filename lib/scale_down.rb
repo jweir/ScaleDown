@@ -5,7 +5,6 @@ require 'rubygems'
 require 'sinatra'
 require 'logger'
 require 'RMagick'
-require 'mini_magick'
 require 'hmac-sha1'
 
 module ScaleDown
