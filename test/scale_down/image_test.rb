@@ -133,6 +133,17 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
       assert_equal 600, image.columns
       assert_equal 800, image.rows
     end
+
+    should "ignore files without orientation EXIF" do
+      @subject = create \
+        tests_path("files/no_orient.tif"),
+        tests_path("scaled_test/graphic_scaled.jpg"),
+        { :width => "auto", :height => 424}
+
+      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+      assert_equal 330, image.columns
+      assert_equal 424, image.rows
+    end
   end
 
   context "CMYK images" do

@@ -78,7 +78,8 @@ class ScaleDown::Image
 
     def resize(file, properties)
       geo = geometry(properties)
-      file.auto_orient!
+      file.auto_orient! unless file.get_exif_by_entry("Orientation").nil?
+
       if properties[:crop]
         file.crop_resized!(geo.width, geo.height, Magick::CenterGravity)
       else
