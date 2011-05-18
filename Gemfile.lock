@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    scale_down (0.2.3.1)
+    scale_down (0.2.3.2)
       rmagick (>= 2.1)
       ruby-hmac (>= 0.4.0)
       sinatra (>= 1.0)
