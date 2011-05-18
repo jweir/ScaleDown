@@ -91,7 +91,7 @@ class ScaleDown::Image
       path = Pathname.new(file_out).dirname.to_s
       FileUtils.mkdir_p path unless FileTest.directory? path
 
-      file.write(file_out) { self.quality = 85 }
+      file.write(file_out) { self.quality = 85; self.colorspace = Magick::RGBColorspace }
       true
     end
 end
