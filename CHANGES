@@ -1,3 +1,7 @@
+== 2011-05-17 ==
+Fixed a bug where images would get oriented when they should not
+Adjusted the colorspacing code a bit
+
 == 2011-05-08 ==
 Removed MiniMagick and using RMagick
 MiniMagick was not returning the dimensions on some images. I was able to get RMagick to work without leaking memory
