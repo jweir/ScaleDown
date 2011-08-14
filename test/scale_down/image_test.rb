@@ -10,23 +10,23 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
   end
 
   teardown do
-    FileUtils.rm_r(tests_path("scaled_test")) if File.directory?(tests_path('scaled_test'))
+    FileUtils.rm_r(fixture_path("scaled_test")) if File.directory?(fixture_path('scaled_test'))
   end
 
   context "scaling a valid image" do
     setup do
       @subject = create \
-        tests_path("files/graphic.png"),
-        tests_path("scaled_test/graphic_scaled.png"),
+        fixture_path("files/graphic.png"),
+        fixture_path("scaled_test/graphic_scaled.png"),
         { :width => 100, :height => 180}
     end
 
     should "save the file (and generate the path)" do
-      assert File.exists?(tests_path('scaled_test/graphic_scaled.png'))
+      assert File.exists?(fixture_path('scaled_test/graphic_scaled.png'))
     end
 
     should "scale the image" do
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.png")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.png")).first
       assert_equal 90, image.columns
       assert_equal 180, image.rows
     end
@@ -45,11 +45,11 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
 
     should "auto scale any one dimensions" do
       assert create \
-        tests_path("files/graphic.png"),
-        tests_path("scaled_test/graphic_scaled.png"),
+        fixture_path("files/graphic.png"),
+        fixture_path("scaled_test/graphic_scaled.png"),
         { :width => "auto", :height => 150 }
 
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.png")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.png")).first
       assert_equal 150, image.rows
       assert_equal 75, image.columns
     end
@@ -76,8 +76,8 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
   context "an invalid file" do
     setup do
       @subject = create \
-        tests_path("files/invalid_jpeg.jpg"),
-        tests_path("scaled_test/graphic_scaled.jpg"),
+        fixture_path("files/invalid_jpeg.jpg"),
+        fixture_path("scaled_test/graphic_scaled.jpg"),
         { :width => 100, :height => 105 }
     end
 
@@ -86,20 +86,20 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
     end
 
     should "not create a scaled image" do
-      assert !File.exists?(tests_path("scaled_test/graphic_scaled.jpg"))
+      assert !File.exists?(fixture_path("scaled_test/graphic_scaled.jpg"))
     end
   end
 
   context "a file larger than the MAX_SIZE" do
     setup do
-      File.expects(:size).with(tests_path("files/graphic.png")).at_least_once.returns(50 * 1_048_576)
+      File.expects(:size).with(fixture_path("files/graphic.png")).at_least_once.returns(50 * 1_048_576)
     end
 
     should "raise an exception" do
       assert_raises ScaleDown::FileSizeTooLarge do
         @subject = create \
-          tests_path("files/graphic.png"),
-          tests_path("scaled_test/graphic_scaled.png"),
+          fixture_path("files/graphic.png"),
+          fixture_path("scaled_test/graphic_scaled.png"),
           { :width => 100, :height => 105 }
       end
     end
@@ -108,13 +108,13 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
   context "cropping" do
     setup do
       @subject = create \
-        tests_path("files/graphic.png"),
-        tests_path("scaled_test/graphic_scaled.png"),
+        fixture_path("files/graphic.png"),
+        fixture_path("scaled_test/graphic_scaled.png"),
         { :width => 25, :height => 25, :crop => true }
     end
 
     should "crop the image to the dimensions" do
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.png")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.png")).first
       assert_equal 25, image.columns
       assert_equal 25, image.rows
     end
@@ -123,24 +123,24 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
   context "orientation" do
     setup do
       @subject = create \
-        tests_path("files/orient.jpg"),
-        tests_path("scaled_test/graphic_scaled.jpg"),
+        fixture_path("files/orient.jpg"),
+        fixture_path("scaled_test/graphic_scaled.jpg"),
         { :width => "auto", :height => 800}
     end
 
     should "be automatic" do
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.jpg")).first
       assert_equal 600, image.columns
       assert_equal 800, image.rows
     end
 
     should "ignore files without orientation EXIF" do
       @subject = create \
-        tests_path("files/no_orient.tif"),
-        tests_path("scaled_test/graphic_scaled.jpg"),
+        fixture_path("files/no_orient.tif"),
+        fixture_path("scaled_test/graphic_scaled.jpg"),
         { :width => "auto", :height => 424}
 
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.jpg")).first
       assert_equal 330, image.columns
       assert_equal 424, image.rows
     end
@@ -149,21 +149,21 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
   context "CMYK images" do
     should "be converted to RGB" do
       create \
-        tests_path("files/cmyk.tif"),
-        tests_path("scaled_test/graphic_scaled.jpg"),
+        fixture_path("files/cmyk.tif"),
+        fixture_path("scaled_test/graphic_scaled.jpg"),
         { :width => "auto", :height => 200}
 
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled.jpg")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled.jpg")).first
       assert_equal Magick::RGBColorspace, image.colorspace
     end
 
     should "convert JPGs to RGB JPEGS" do
       create \
-        tests_path("files/cmyk_gray.jpg"),
-        tests_path("scaled_test/graphic_scaled_2.jpg"),
+        fixture_path("files/cmyk_gray.jpg"),
+        fixture_path("scaled_test/graphic_scaled_2.jpg"),
         { :width => "auto", :height => 200}
 
-      image = Magick::Image.read(tests_path("scaled_test/graphic_scaled_2.jpg")).first
+      image = Magick::Image.read(fixture_path("scaled_test/graphic_scaled_2.jpg")).first
       assert_equal Magick::RGBColorspace, image.colorspace
     end
   end

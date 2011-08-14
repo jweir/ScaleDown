@@ -43,9 +43,9 @@ class ScaleDown::Test < Test::Unit::TestCase
     context "integration test" do
       setup do
         FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1")
-        FileUtils.cp tests_path("files/graphic.png"), "/tmp/scale_down/test_images/example_1/graphic.png"
+        FileUtils.cp fixture_path("files/graphic.png"), "/tmp/scale_down/test_images/example_1/graphic.png"
         FileUtils.mkdir_p("/tmp/scale_down/test_images/example_2")
-        FileUtils.cp tests_path("files/invalid_jpeg.jpg"), "/tmp/scale_down/test_images/example_2/invalid_jpeg.jpg"
+        FileUtils.cp fixture_path("files/invalid_jpeg.jpg"), "/tmp/scale_down/test_images/example_2/invalid_jpeg.jpg"
       end
 
       teardown do
@@ -53,7 +53,7 @@ class ScaleDown::Test < Test::Unit::TestCase
       end
 
       should "get image info" do
-        FileUtils.cp tests_path("files/cmyk.tif"), "/tmp/scale_down/test_images/example_1/long name .tiff"
+        FileUtils.cp fixture_path("files/cmyk.tif"), "/tmp/scale_down/test_images/example_1/long name .tiff"
         get "/test_images/example_1/#{CGI.escape 'long name .tiff'}/info"
         assert_equal "300x500", last_response.body
       end

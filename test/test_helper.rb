@@ -1,4 +1,4 @@
-require 'lib/scale_down'
+require 'scale_down'
 require 'rack/test'
 require 'contest'
 require 'mocha'
@@ -14,7 +14,7 @@ class Test::Unit::TestCase
     hmac = HMAC::SHA1.new(secret).update(path).to_s
   end
 
-  def tests_path(append)
+  def fixture_path(append)
     File.join(File.expand_path(File.dirname(__FILE__)), append)
   end
 
