@@ -53,7 +53,7 @@ class ScaleDown::Image
       file = Magick::Image.read(file_path).first
       unless file.nil?
         yield file
-        file.destroy!
+        # file.destroy!
       end
     rescue Magick::ImageMagickError => e
     end
