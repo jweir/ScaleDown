@@ -10,12 +10,12 @@ class ScaleDown::Dispatcher
       ScaleDown.logger.info "Dipatcher#process #{dispatcher.root_path}"
 
       return ["Missing file", 404] unless dispatcher.root_file_exists?
-      return [dispatcher.redirect_path, 301] if dispatcher.scaled_file_exists?
+      return [dispatcher.redirect_path, 302] if dispatcher.scaled_file_exists?
 
       return ["Invalid HMAC signature", 403] unless dispatcher.valid_hmac?
       return ["File failed to scale. The file may be corrupt.", 500] unless dispatcher.scale
 
-      [dispatcher.redirect_path, 301]
+      [dispatcher.redirect_path, 302]
     end
 
     # TODO return a JSON response with a full set of image details

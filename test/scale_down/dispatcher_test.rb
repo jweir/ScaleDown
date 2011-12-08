@@ -87,8 +87,8 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
             ScaleDown::Dispatcher.process(@params)
           end
 
-          should "return a 301 redirect to the processed image's URL" do
-            assert_equal ["/file/path/scaled/400x300-crop/filename.png", 301], ScaleDown::Dispatcher.process(@params)
+          should "return a 302 redirect to the processed image's URL" do
+            assert_equal ["/file/path/scaled/400x300-crop/filename.png", 302], ScaleDown::Dispatcher.process(@params)
           end
         end
 
@@ -106,8 +106,8 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
           File.expects(:exists?).with("/tmp/file/path/scaled/400x300-crop/filename.png").returns true
         end
 
-        should "return a 301 redirect to the processed image's URL" do
-          assert_equal ["/file/path/scaled/400x300-crop/filename.png", 301], ScaleDown::Dispatcher.process(@params)
+        should "return a 302 redirect to the processed image's URL" do
+          assert_equal ["/file/path/scaled/400x300-crop/filename.png", 302], ScaleDown::Dispatcher.process(@params)
         end
       end
 
