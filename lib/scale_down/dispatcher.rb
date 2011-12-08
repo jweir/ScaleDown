@@ -55,7 +55,7 @@ class ScaleDown::Dispatcher
   end
 
   def redirect_path
-    ["/"+@params[:path], "scaled", scaled_filename].join("/")
+    ["/"+@params[:path], @params[:geometry], scaled_filename].join("/")
   end
 
   def root_file_exists?
@@ -67,7 +67,8 @@ class ScaleDown::Dispatcher
   end
 
   def root_path
-    File.join(ScaleDown.public_path, @params[:path], @params[:filename])
+    root = @params[:path].gsub(/\/scaled$/,"")
+    File.join(ScaleDown.public_path, root, @params[:filename])
   end
 
   def scaled_file_path
@@ -75,7 +76,7 @@ class ScaleDown::Dispatcher
   end
 
   def scaled_filename
-    "#{filename}-#{@params[:geometry]}.#{scaled_extension}"
+    "#{filename}.#{scaled_extension}"
   end
 
   def filename

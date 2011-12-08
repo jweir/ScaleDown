@@ -8,13 +8,13 @@ Supports cropping images and converts CMYK to RGB.
 
 The URL schema
 
-  http://:host/:geometry/:path_to_file/:filename?:hmac_signature
+  http://:host/:path_to_file/scaled/:geometry/:filename?:hmac_signature
 
   :host is the address running ScaleDown
 
-  :geometry is width x height and an optional `-crop`
-
   :path_to_file is the public path of the original file
+
+  :geometry is width x height and an optional `-crop`
 
   :filename is the name of the image to scale
 
@@ -22,21 +22,19 @@ The URL schema
 
 Example
 
-  http://images.example.com/400x300/images/logo.png?A3SDACEDF
+  http://images.example.com/images/scaled/400x300/logo.png?A3SDACEDF
 
-  would 301 redirect to the scaled image
-
-  http://images.example.com/images/scaled/400x300/logo.png
+  returns logo.png image scaled to 400x300
 
 To crop an image include the 'crop' option.  The image will be scaled and cropped to fit the geometry.
 
-  http://images.example.com/400x300-crop/images/logo.png?A3SDACEDF
+  http://images.example.com/images/scaled/400x300-crop/logo.png?A3SDACEDF
 
 Using 'auto' as a dimension will fit the image to other dimension.
 
 For example, to ensure an image is 300 pixels wide set the height to auto
 
-  http://images.example.com/300xauto/images/logo.png/?A3SDACEDF
+  http://images.example.com/images/scaled/300xauto/logo.png/?A3SDACEDF
 
 There is a very simple `/info` function for getting the image dimesions. It just returns a string with the WIDTHxHEIGHT.
 
@@ -73,8 +71,8 @@ Your application will need to generate the image's URL and HMAC signature.
 
   # ie signed_image_url('images', 'picture.png', '400x300-cropped')
   def signed_image_url(path, filename, geometry)
-    hmac = HMAC::SHA1.new("secret").update("/#{geometry}/#{path}/#{filename}").to_s[0..8]
-    "http://images.myserver.com/#{geometry}/#{path}/#{CGI.escape(filename)}?#{hmac}"
+    hmac = HMAC::SHA1.new("secret").update("/#{path}/scaled/#{geometry}/#{filename}").to_s[0..8]
+    "http://images.myserver.com/#{path}/scaled/#{geometry}/#{CGI.escape(filename)}?#{hmac}"
   end
 
 Of course this could be done in PHP, Node, Python, or other languages.

@@ -9,10 +9,10 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       ScaleDown.hmac_length = 8
       ScaleDown.public_path = "/tmp"
 
-      hmac = HMAC::SHA1.new("secret").update("file/path/filename.png/400x300-crop").to_s
+      hmac = HMAC::SHA1.new("secret").update("file/path/400x300-crop/filename.png").to_s
 
       @params = {
-        :path     => "file/path",
+        :path     => "file/path/scaled",
         :filename => "filename.png",
         :geometry => "400x300-crop",
         :hmac     => hmac[0...8]
@@ -34,8 +34,8 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
         assert @dispatcher.root_file_exists?
       end
 
-      should "deterimine the scaled image's existance" do
-        File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns true
+      should "determine the scaled image's existance" do
+        File.expects(:exists?).with("/tmp/file/path/scaled/400x300-crop/filename.png").returns true
         assert @dispatcher.scaled_file_exists?
       end
 
@@ -44,7 +44,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       end
 
       should "have a redirect path" do
-        assert_equal "/file/path/scaled/filename-400x300-crop.png", @dispatcher.redirect_path
+        assert_equal "/file/path/scaled/400x300-crop/filename.png", @dispatcher.redirect_path
       end
 
       should "process the image" do
@@ -74,7 +74,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       context "for an existing, unscaled image" do
         setup do
           File.expects(:exists?).with("/tmp/file/path/filename.png").returns true
-          File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns false
+          File.expects(:exists?).with("/tmp/file/path/scaled/400x300-crop/filename.png").returns false
         end
 
         context "with a valid HMAC" do
@@ -88,7 +88,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
           end
 
           should "return a 301 redirect to the processed image's URL" do
-            assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Dispatcher.process(@params)
+            assert_equal ["/file/path/scaled/400x300-crop/filename.png", 301], ScaleDown::Dispatcher.process(@params)
           end
         end
 
@@ -103,11 +103,11 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       context "for an existing, scaled, image" do
         setup do
           File.expects(:exists?).with("/tmp/file/path/filename.png").returns true
-          File.expects(:exists?).with("/tmp/file/path/scaled/filename-400x300-crop.png").returns true
+          File.expects(:exists?).with("/tmp/file/path/scaled/400x300-crop/filename.png").returns true
         end
 
         should "return a 301 redirect to the processed image's URL" do
-          assert_equal ["/file/path/scaled/filename-400x300-crop.png", 301], ScaleDown::Dispatcher.process(@params)
+          assert_equal ["/file/path/scaled/400x300-crop/filename.png", 301], ScaleDown::Dispatcher.process(@params)
         end
       end
 

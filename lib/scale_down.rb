@@ -19,7 +19,7 @@ module ScaleDown
 
 
   def self.valid_hmac?(params)
-    str = ["/", params[:geometry], "/",params[:path], "/", params[:filename]].join
+    str = ["/", params[:path], "/", params[:geometry], "/", params[:filename]].join
     hmac(str) == params[:hmac]
   end
 

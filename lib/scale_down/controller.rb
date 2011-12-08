@@ -17,15 +17,15 @@ class ScaleDown::Controller < Sinatra::Application
     end
   end
 
-  # get '/*/:filename/:geometry?:hmac'
+  # get '/*/:geometry/:filename?:hmac'
   # is what I want, but this fails when the URL includes things like %23 (an encoded hash tag)
   get '/*' do
     parts = params[:splat].join("/").split("/")
 
     params = {
       :hmac     => request.env["QUERY_STRING"],
-      :geometry => parts.shift,
       :filename => parts.pop,
+      :geometry => parts.pop,
       :splat    => parts
     }
 

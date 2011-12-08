@@ -1,8 +1,7 @@
-require 'scale_down'
+require './lib/scale_down'
 require 'rack/test'
 require 'contest'
 require 'mocha'
-require 'ruby-debug'
 
 ENV['RACK_ENV'] = 'test'
 
