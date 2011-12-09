@@ -104,14 +104,6 @@ Configure Nginx, Apache, etc to run the server.
 
 Pluses in filenames will not route properly.  Filenames need to have these removed or replaced.
 
-== TODO
-
-Custom Read/Write methods to allow for more than just local storage.
-
-Examples using Node.js
-
-There is an issue on some systems with pluses in filenames.
-
 == Dependencies
 
 * Sinatra
