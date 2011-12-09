@@ -32,10 +32,13 @@ class ScaleDown::Controller < Sinatra::Application
     path, status = dispatch(params)
 
     ScaleDown.logger.info "Controller#get #{path} #{status}"
-    unless status == 403
+    case status
+    when 403 then
       redirect URI.encode(path), status
+    when 302 then
+      # File is found or scaled, use Sinatra's built in send file method
+      static!
     else
-      # TODO error messages which explain what went wrong
       [status, "Error: this image could not be processed"]
     end
   end
