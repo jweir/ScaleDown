@@ -60,7 +60,7 @@ class ScaleDown::Test < Test::Unit::TestCase
 
       should "get an image and scale it" do
         valid_get '/test_images/example_1/scaled/400x300-cropped/graphic.png'
-        assert_equal 302, last_response.status
+        assert_equal 200, last_response.status
         assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/400x300-cropped/graphic.png")
         assert_match "/test_images/example_1/scaled/400x300-cropped/graphic.png", last_response["Location"]
       end

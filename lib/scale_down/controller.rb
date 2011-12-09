@@ -33,11 +33,13 @@ class ScaleDown::Controller < Sinatra::Application
 
     ScaleDown.logger.info "Controller#get #{path} #{status}"
     case status
-    when 403 then
-      redirect URI.encode(path), status
     when 302 then
       # File is found or scaled, use Sinatra's built in send file method
       static!
+    when 403 then
+      [status, "Error: the the HMAC is invalid for this request"]
+    when 404 then
+      [status, "Error: the orignal image could not be found"]
     else
       [status, "Error: this image could not be processed"]
     end
