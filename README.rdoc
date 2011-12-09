@@ -79,6 +79,13 @@ HMAC requires a shared key between the application generating the URL and the Sc
     return [global.$FD.assetHost,  absolute_path, '/scaled', "/", geometry, "/",escape(filename)].join("") + "?"+ signature
   }
 
+== Images: PNGs, JPGs, Tiffs and others
+
+ScaleDown will handle any image that Image Magick can process.  But there are some rules:
+
+* PNGs remain PNGs and JPGs remain JPGS
+* All other images are converted to JPG and issued a 301 redirect
+
 == Installation and Configuration
 
   gem install scale_down

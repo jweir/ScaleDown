@@ -33,6 +33,9 @@ class ScaleDown::Controller < Sinatra::Application
 
     ScaleDown.logger.info "Controller#get #{path} #{status}"
     case status
+    when 301 then
+      # original is not a png/jpg redirect to jpg
+      redirect URI.encode(path), status
     when 302 then
       # File is found or scaled, use Sinatra's built in send file method
       static!

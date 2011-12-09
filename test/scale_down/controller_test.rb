@@ -21,11 +21,19 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
   end
 
   context "a valid request" do
-    should "redirect to the image path" do
+    should "send the file" do
       ScaleDown::Dispatcher.expects(:process).returns ["/image-path", 302]
       get "/path/geo/filename?hmac"
 
       assert_equal 200, last_response.status
+    end
+
+    should "redirect to the image path for non png or jpg original imags" do
+      ScaleDown::Dispatcher.expects(:process).returns ["/image-path", 301]
+      get "/path/geo/filename?hmac"
+
+      assert_equal 301, last_response.status
+      assert_equal "http://example.org/image-path", last_response["Location"]
     end
   end
 

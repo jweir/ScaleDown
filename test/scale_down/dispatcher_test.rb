@@ -67,6 +67,24 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
         dispatcher = ScaleDown::Dispatcher.new @params.merge(:filename => "test.png")
         assert_match /\.png$/, dispatcher.scaled_file_path
       end
+
+      should "use a jpeg for all non png images" do
+        dispatcher = ScaleDown::Dispatcher.new @params.merge(:filename => "test.tif")
+        assert_match /\.jpg$/, dispatcher.scaled_file_path
+        assert_match /\.jpg$/, dispatcher.redirect_path
+      end
+
+      context "redirect_code" do
+        should "be 302 for png and jpgs" do
+          dispatcher = ScaleDown::Dispatcher.new @params
+          assert_equal 302, dispatcher.redirect_code
+        end
+
+        should "be 301 for non png or jpgs " do
+          dispatcher = ScaleDown::Dispatcher.new @params.merge(:filename => "test.tif")
+          assert_equal 301, dispatcher.redirect_code
+        end
+      end
     end
 
     context "process response" do

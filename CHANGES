@@ -1,4 +1,7 @@
 == 2011-12-09 ==
+Version 0.5.1
+Fix for non PNG/JPG images.  Redirect to the JPG version.
+
 Version 0.5.0 
 This version no longer uses redirects.
 
