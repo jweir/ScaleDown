@@ -1,6 +1,6 @@
 = ScaleDown
 
-A on demand image scaling server.
+An on demand image scaling server.
 
 Images are scaled based upon their URL. An HMAC signature is used to prevent unauthorized scaling of images.
 
@@ -14,6 +14,8 @@ The URL to your image would be:
 
   http://images.example.com/images/john/scaled/400x400/picture.png?HMAC_SIGNATURE
 
+The scaled file will be saved in a public path identical to the request. So once an image is scaled your webserver, Apache, Nginx, etc, can statically server the file.
+
 The schema is
 
   http://:host/:path_to_file/scaled/:geometry/:filename?:hmac_signature
@@ -22,7 +24,7 @@ The schema is
 
   :path_to_file is the public path of the original file
 
-  `scaled` keyword is place the file in a subdirectory reserved for scaled images.
+  `scaled` keyword
 
   :geometry is width x height and an optional `-crop`
 
@@ -56,10 +58,10 @@ HMAC requires a shared key between the application generating the URL and the Sc
 
   require 'ruby-hmac'
 
-  def signed_image_url(path, filename, geometry)
+  def signed_image_url(absolute_path, filename, geometry)
     shared_secret = "secret"
-    hmac = HMAC::SHA1.new(shared_secret).update([path, 'scaled', geometry, filename].join("/")).to_s[0...8]
-    "http://images.example.com#{[path, 'scaled', geometry, CGI.escape(filename)].join("/")}?#{hmac}"
+    hmac = HMAC::SHA1.new(shared_secret).update([absolute_path, 'scaled', geometry, filename].join("/")).to_s[0...8]
+    "http://images.example.com#{[absolute_path, 'scaled', geometry, CGI.escape(filename)].join("/")}?#{hmac}"
   end
 
 === Sample Node.js URL Generator
@@ -72,16 +74,16 @@ HMAC requires a shared key between the application generating the URL and the Sc
     return crypto.createHmac('sha1',shared_secret).update(string).digest('hex').substr(0,8)
   }
 
-  function signed_image_url(path, filename, geometry){
-    signature = hmac( [ path, '/scaled', "/" + geometry, "/", filename].join("") )
-    return [global.$FD.assetHost,  path, '/scaled', "/",options, "/",escape(filename)].join("") + "?"+ signature
+  function signed_image_url(absolute_path, filename, geometry){
+    signature = hmac( [ absolute_path, '/scaled', "/" + geometry, "/", filename].join("") )
+    return [global.$FD.assetHost,  absolute_path, '/scaled', "/", geometry, "/",escape(filename)].join("") + "?"+ signature
   }
 
 == Installation and Configuration
 
   gem install scale_down
 
-Create a Rackup file (config.ru). See http://rubydoc.info/gems/scale_down/0.2.1/ScaleDown more options
+Create a Rackup file (config.ru). See https://github.com/jweir/ScaleDown/tree/master/config_sample.ru more options
 
   require 'rubygems'
   require 'scale_down'
