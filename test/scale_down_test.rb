@@ -62,7 +62,6 @@ class ScaleDown::Test < Test::Unit::TestCase
         valid_get '/test_images/example_1/scaled/400x300-cropped/graphic.png'
         assert_equal 200, last_response.status
         assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/400x300-cropped/graphic.png")
-        assert_match "/test_images/example_1/scaled/400x300-cropped/graphic.png", last_response["Location"]
       end
 
       should "get a nonexistant image and return a 404" do
