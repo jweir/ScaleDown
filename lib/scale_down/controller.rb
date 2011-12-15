@@ -32,6 +32,7 @@ class ScaleDown::Controller < Sinatra::Application
     path, status = dispatch(params)
 
     ScaleDown.logger.info "Controller#get #{path} #{status}"
+    $0 = "scale_down Controller#get #{path} #{status}"
     case status
     when 301 then
       # original is not a png/jpg redirect to jpg
