@@ -100,7 +100,7 @@ Create a Rackup file (config.ru). See https://github.com/jweir/ScaleDown/tree/ma
     config.hmac_key    = "secret"
 
     # Path to the public directory
-    config.public_path = File.expand_path(File.dirname(__FILE__))+"/public"
+    config.public_folder = File.expand_path(File.dirname(__FILE__))+"/public"
   end
 
   run ScaleDown::Controller

@@ -21,7 +21,7 @@ class ScaleDown::Dispatcher
 
     # TODO return a JSON response with a full set of image details
     def info(relative_path)
-      path = [ScaleDown.public_path, relative_path].join("/")
+      path = [ScaleDown.public_folder, relative_path].join("/")
       if File.exists?(path)
         GC.start
         image = Magick::Image.read(path).first
@@ -73,11 +73,11 @@ class ScaleDown::Dispatcher
 
   def root_path
     root = @params[:path].gsub(/\/scaled$/,"")
-    File.join(ScaleDown.public_path, root, @params[:filename])
+    File.join(ScaleDown.public_folder, root, @params[:filename])
   end
 
   def scaled_file_path
-    File.join(ScaleDown.public_path, redirect_path)
+    File.join(ScaleDown.public_folder, redirect_path)
   end
 
   def scaled_filename

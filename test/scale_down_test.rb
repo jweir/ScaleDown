@@ -16,7 +16,7 @@ class ScaleDown::Test < Test::Unit::TestCase
       ScaleDown.hmac_key    = "secret"
       ScaleDown.hmac_method = HMAC::SHA1
       ScaleDown.hmac_length = 8
-      ScaleDown.public_path = "/tmp/scale_down"
+      ScaleDown.public_folder = "/tmp/scale_down"
     end
 
     context "HMAC" do
@@ -53,8 +53,8 @@ class ScaleDown::Test < Test::Unit::TestCase
       end
 
       should "get image info" do
-        FileUtils.cp fixture_path("files/cmyk.tif"), "/tmp/scale_down/test_images/example_1/long name .tiff"
-        get "/test_images/example_1/#{CGI.escape 'long name .tiff'}/info"
+        FileUtils.cp fixture_path("files/cmyk.tif"), "/tmp/scale_down/test_images/example_1/long-name.tiff"
+        get "/test_images/example_1/#{CGI.escape 'long-name.tiff'}/info"
         assert_equal "300x500", last_response.body
       end
 

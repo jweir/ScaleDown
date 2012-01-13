@@ -29,11 +29,11 @@ module ScaleDown
 
     # The location of the public path for you application
     # +Must be set+
-    attr_accessor :public_path
+    attr_accessor :public_folder
 
-    def public_path=(str)
-      @public_path = str
-      ScaleDown::Controller.public = str
+    def public_folder=(str)
+      @public_folder = str
+      ScaleDown::Controller.public_folder = str
     end
 
     def logger=(logger)
