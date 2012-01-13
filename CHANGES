@@ -1,4 +1,9 @@
 == 2011-12-09 ==
+Version 0.6.0
+public_path is renamed public_folder
+bug fixes
+
+== 2011-12-09 ==
 Version 0.5.1
 Fix for non PNG/JPG images.  Redirect to the JPG version.
 
