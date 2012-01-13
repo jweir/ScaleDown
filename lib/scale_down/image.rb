@@ -41,9 +41,8 @@ class ScaleDown::Image
   def initialize(properties = {})
     load_file(properties[:file]) do |file|
       resize(file, properties[:options])
-      fix_color_space(file)
-
-      @valid = write(file, properties[:out])
+      corrected = fix_color_space(file)
+      @valid = write(corrected, properties[:out])
     end
   end
 
@@ -72,7 +71,9 @@ class ScaleDown::Image
     def fix_color_space(file)
       if file.colorspace == Magick::CMYKColorspace
         file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
-        file = file.quantize 2**24, Magick::RGBColorspace
+        file.quantize 2**24, Magick::RGBColorspace
+      else
+        file
       end
     end
 
