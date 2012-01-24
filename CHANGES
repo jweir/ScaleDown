@@ -1,3 +1,7 @@
+== 2012-01-24 ==
+Version 0.6.1
+Minor change in CMYK conversion
+
 == 2011-12-09 ==
 Version 0.6.0
 public_path is renamed public_folder
