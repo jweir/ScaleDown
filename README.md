@@ -58,32 +58,35 @@ You don't want someone taking down your server with malicious URLs, so an HMAC s
 HMAC requires a shared key between the application generating the URL and the ScaleDown server.
 
 Sample Ruby URL Generator
-=========================
+-------------------------
 
-    ```ruby
-    require 'ruby-hmac'
+```ruby
+require 'ruby-hmac'
 
-    def signed_image_url(absolute_path, filename, geometry)
-      shared_secret = "secret"
-      hmac = HMAC::SHA1.new(shared_secret).update([absolute_path, 'scaled', geometry, filename].join("/")).to_s[0...8]
-      "http://images.example.com#{[absolute_path, 'scaled', geometry, CGI.escape(filename)].join("/")}?#{hmac}"
-    end
+def signed_image_url(absolute_path, filename, geometry)
+  shared_secret = "secret"
+  hmac = HMAC::SHA1.new(shared_secret).update([absolute_path, 'scaled', geometry, filename].join("/")).to_s[0...8]
+  "http://images.example.com#{[absolute_path, 'scaled', geometry, CGI.escape(filename)].join("/")}?#{hmac}"
+end
+```
 
-=== Sample Node.js URL Generator
+Sample Node.js URL Generator
+----------------------------
 
-    ```javascript
-    // Uses the Node.js crypot library
-    var crypto = require('crypto')
+```javascript
+// Uses the Node.js crypot library
+var crypto = require('crypto')
 
-    function hmac(string){
-      var shared_secret = "secret"
-      return crypto.createHmac('sha1',shared_secret).update(string).digest('hex').substr(0,8)
-    }
+function hmac(string){
+  var shared_secret = "secret"
+  return crypto.createHmac('sha1',shared_secret).update(string).digest('hex').substr(0,8)
+}
 
-    function signed_image_url(absolute_path, filename, geometry){
-      signature = hmac( [ absolute_path, '/scaled', "/" + geometry, "/", filename].join("") )
-      return [global.$FD.assetHost,  absolute_path, '/scaled', "/", geometry, "/",escape(filename)].join("") + "?"+ signature
-    }
+function signed_image_url(absolute_path, filename, geometry){
+  signature = hmac( [ absolute_path, '/scaled', "/" + geometry, "/", filename].join("") )
+  return [global.$FD.assetHost,  absolute_path, '/scaled', "/", geometry, "/",escape(filename)].join("") + "?"+ signature
+}
+```
 
 PNG, JPG, TIFF and other images supported
 ========================================
@@ -100,19 +103,20 @@ Installation & Configuration
 
 Create a Rackup file (config.ru). See https://github.com/jweir/ScaleDown/tree/master/config_sample.ru more options
 
-    ```ruby
-    require 'rubygems'
-    require 'scale_down'
+```ruby
+require 'rubygems'
+require 'scale_down'
 
-    ScaleDown.tap do |config|
-      # Shared secret for generating the HMAC signature
-      config.hmac_key    = "secret"
+ScaleDown.tap do |config|
+  # Shared secret for generating the HMAC signature
+  config.hmac_key    = "secret"
 
-      # Path to the public directory
-      config.public_folder = File.expand_path(File.dirname(__FILE__))+"/public"
-    end
+  # Path to the public directory
+  config.public_folder = File.expand_path(File.dirname(__FILE__))+"/public"
+end
 
-    run ScaleDown::Controller
+run ScaleDown::Controller
+```
 
 Configure Nginx, Apache, etc to run the server.
 
@@ -128,7 +132,7 @@ Dependencies
 * RMagick
 * Ruby-HMAC
 
-RMagick can be a bit tricky to install, these links[http://www.google.com/search?q=install+rmagick] might help.
+RMagick can be a bit tricky to install, these links http://www.google.com/search?q=install+rmagick might help.
 
 LICENSE
 =======
