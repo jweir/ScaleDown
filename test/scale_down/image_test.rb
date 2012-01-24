@@ -146,8 +146,8 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
     end
   end
 
-  context "CMYK images" do
-    should "be converted to RGB" do
+  context "CMYK" do
+    should "convert TIF's to RGB JPGs" do
       create \
         fixture_path("files/cmyk.tif"),
         fixture_path("scaled_test/scaled/graphic.jpg"),
@@ -157,13 +157,13 @@ class ScaleDown::Image::Test < Test::Unit::TestCase
       assert_equal Magick::RGBColorspace, image.colorspace
     end
 
-    should "convert JPGs to RGB JPEGS" do
+    should "JPGs should covert to RGB JPGS" do
       create \
         fixture_path("files/cmyk_gray.jpg"),
-        fixture_path("scaled_test/scaled/graphic_2.jpg"),
+        fixture_path("scaled_test/scaled/rgb.jpg"),
         { :width => "auto", :height => 200}
 
-      image = Magick::Image.read(fixture_path("scaled_test/scaled/graphic_2.jpg")).first
+      image = Magick::Image.read(fixture_path("scaled_test/scaled/rgb.jpg")).first
       assert_equal Magick::RGBColorspace, image.colorspace
     end
   end

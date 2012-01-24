@@ -13,7 +13,6 @@ class ScaleDown::Image
   include Magick
 
   class << self
-
     def scale(properties)
       new(properties).valid?
     end
@@ -55,6 +54,7 @@ class ScaleDown::Image
         # file.destroy!
       end
     rescue Magick::ImageMagickError => e
+      # TODO include the error in the HTTP response
     end
   end
 
@@ -70,8 +70,11 @@ class ScaleDown::Image
 
     def fix_color_space(file)
       if file.colorspace == Magick::CMYKColorspace
+        file.strip!
         file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
-        file.quantize 2**24, Magick::RGBColorspace
+        file.quantize(2**24, Magick::RGBColorspace).tap do |image|
+          image.colorspace = Magick::RGBColorspace
+        end
       else
         file
       end
