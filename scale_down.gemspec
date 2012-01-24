@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "ruby-hmac", ">= 0.4.0"
 
   s.add_development_dependency "contest", ">= 0.1.2"
+  s.add_development_dependency "rake", ">= 0.9.2.2"
   s.add_development_dependency "mocha", "0.9.8"
   s.add_development_dependency "rack-test", "0.5.6"
 
