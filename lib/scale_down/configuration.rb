@@ -31,6 +31,10 @@ module ScaleDown
     # +Must be set+
     attr_accessor :public_folder
 
+    # Labels are predefined gemeotries
+    attr_accessor :labels
+    ScaleDown.labels = Hash.new
+
     def public_folder=(str)
       @public_folder = str
       ScaleDown::Controller.public_folder = str

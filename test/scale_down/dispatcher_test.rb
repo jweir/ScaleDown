@@ -14,7 +14,7 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       @params = {
         :path     => "file/path/scaled",
         :filename => "filename.png",
-        :geometry => "400x300-crop",
+        :target   => "400x300-crop",
         :hmac     => hmac[0...8]
       }
     end
@@ -87,8 +87,35 @@ class ScaleDown::Dispatcher::Test < Test::Unit::TestCase
       end
     end
 
-    context "process response" do
+    context "target" do
+      context "from a label" do
+        setup do
+          ScaleDown.labels = { "thumbnail" => "40x50" }
+          @subject = ScaleDown::Dispatcher.new :target => "thumbnail"
+        end
 
+        should "use the label's width and height" do
+          dim = @subject.image_options
+          assert_equal 40, dim[:width]
+          assert_equal 50, dim[:height]
+          assert_equal false, dim[:crop]
+        end
+
+        should "always valid the hmac" do
+          assert @subject.valid_hmac?
+        end
+
+        should "work with the cropped flag" do
+          @subject = ScaleDown::Dispatcher.new :target => "thumbnail-crop"
+          dim = @subject.image_options
+          assert_equal 40, dim[:width]
+          assert_equal 50, dim[:height]
+          assert_equal true, dim[:crop]
+        end
+      end
+    end
+
+    context "process response" do
       context "for an existing, unscaled image" do
         setup do
           File.expects(:exists?).with("/tmp/file/path/filename.png").returns true

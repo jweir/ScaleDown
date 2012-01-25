@@ -26,7 +26,7 @@ class ScaleDown::Test < Test::Unit::TestCase
         @params = {
           :path     => "file/path",
           :filename => "filename.png",
-          :geometry => "400x300-crop",
+          :target   => "400x300-crop",
           :hmac     => hmac[0...8]
         }
       end
@@ -42,6 +42,7 @@ class ScaleDown::Test < Test::Unit::TestCase
 
     context "integration test" do
       setup do
+
         FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1")
         FileUtils.cp fixture_path("files/graphic.png"), "/tmp/scale_down/test_images/example_1/graphic.png"
         FileUtils.mkdir_p("/tmp/scale_down/test_images/example_2")
@@ -58,7 +59,7 @@ class ScaleDown::Test < Test::Unit::TestCase
         assert_equal "300x500", last_response.body
       end
 
-      should "get an image and scale it" do
+      should "get an image with a geometry and scale it" do
         valid_get '/test_images/example_1/scaled/400x300-cropped/graphic.png'
         assert_equal 200, last_response.status
         assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/400x300-cropped/graphic.png")
@@ -74,6 +75,29 @@ class ScaleDown::Test < Test::Unit::TestCase
 
         assert_equal 500, last_response.status
         assert !File.exists?("/tmp/scale_down/test_images/example_2/scaled/400x300-cropped/invalid_jpeg.jpg")
+      end
+
+      context "using a label" do
+        setup do
+          ScaleDown.labels = { "very-large" => "600x600" }
+        end
+
+        should "get an image with a label and scale it" do
+          get '/test_images/example_1/scaled/very-large/graphic.png'
+          assert_equal 200, last_response.status
+          assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/very-large/graphic.png")
+
+          get '/test_images/example_1/scaled/very-large-crop/graphic.png'
+          assert_equal 200, last_response.status
+          assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/very-large-crop/graphic.png")
+        end
+
+        context "that does not exist" do
+          should "return an error" do
+            get '/test_images/example_1/scaled/toosmall/graphic.png'
+            assert_equal 403, last_response.status
+          end
+        end
       end
     end
   end

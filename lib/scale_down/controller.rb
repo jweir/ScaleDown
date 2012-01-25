@@ -25,7 +25,7 @@ class ScaleDown::Controller < Sinatra::Application
     params = {
       :hmac     => request.env["QUERY_STRING"],
       :filename => parts.pop,
-      :geometry => parts.pop,
+      :target   => parts.pop, # the label or geometry
       :splat    => parts
     }
 
@@ -54,7 +54,7 @@ class ScaleDown::Controller < Sinatra::Application
     ScaleDown::Dispatcher.process \
       :path     => params[:splat].join("/"),
       :filename => params[:filename],
-      :geometry => params[:geometry],
+      :target   => params[:target],
       :hmac     => params[:hmac]
   end
 end

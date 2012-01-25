@@ -37,11 +37,13 @@ class ScaleDown::Dispatcher
   end
 
   def image_options
-    dimensions, *options = @params[:geometry].split("-")
-    width, height = dimensions.split("x")
-    {:height => height.to_i, :width => width.to_i}.tap do |o|
-      options.each {|k| o[k.to_sym] = true}
-    end
+    width, height =  (target_is_label? ? ScaleDown.labels[target] : target).split("x")
+
+    {
+      :height => height.to_i,
+      :width  => width.to_i,
+      :crop   => crop?
+    }
   end
 
   def scale
@@ -51,8 +53,24 @@ class ScaleDown::Dispatcher
       :options => image_options
   end
 
+  def target
+    @dimensions ||= @params[:target].split(/-crop\Z/).first
+  end
+
+  def target_is_label?
+    @target_is_label ||= ScaleDown.labels.keys.include?(target)
+  end
+
+  def crop?
+    @crop ||= ! @params[:target].match(/-crop\Z/).nil?
+  end
+
   def valid_hmac?
-    ScaleDown.valid_hmac?(@params)
+    if target_is_label?
+      true
+    else
+      ScaleDown.valid_hmac?(@params)
+    end
   end
 
   def redirect_code
@@ -60,7 +78,7 @@ class ScaleDown::Dispatcher
   end
 
   def redirect_path
-    ["/"+@params[:path], @params[:geometry], scaled_filename].join("/")
+    ["/"+@params[:path], @params[:target], scaled_filename].join("/")
   end
 
   def root_file_exists?

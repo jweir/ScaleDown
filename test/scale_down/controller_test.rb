@@ -12,16 +12,16 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
       ScaleDown::Dispatcher.expects(:process).with(
         :path     => "user/path/scaled",
         :filename => "filename.png",
-        :geometry => "400x300-crop-grayscale",
+        :target   => "400x300-crop-grayscale",
         :hmac     => "HMAC").
-      returns ["path","status"]
+        returns ["path","status"]
 
-      get '/user/path/scaled/400x300-crop-grayscale/filename.png?HMAC'
+        get '/user/path/scaled/400x300-crop-grayscale/filename.png?HMAC'
     end
   end
 
   context "a valid request" do
-    should "send the file" do
+    should "respond with the file" do
       ScaleDown::Dispatcher.expects(:process).returns ["/image-path", 302]
       get "/path/geo/filename?hmac"
 
