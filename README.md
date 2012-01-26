@@ -19,16 +19,40 @@ The scaled file is saved in a public path identical to the request. It will be s
 Geometry, Labels and Cropping
 ==============================
 
-There are two methods of requesting a scaled image: geometry or label.
+There are two methods of requesting a scaled image: label or geometry.
+
+Labels
+------
+
+A label is a predefined box the scaled image will fit within.
+Labels are defined in the `config.ru` file.
+
+```sh
+# A label called thumbnail has been defined as "100x100"
+# The below url will scale picture.png to fit into a 100 x 100 box
+http://server/images/john/scaled/thumbnail/picture.png
+                          ^^^^^^
+```
+
+```ruby
+# in your config.ru file
+  config.labels = {
+    "thumbnail" => "100x100"
+  }
+```
 
 Geometry
 --------
 
+Geometries allow the client to request an image of any size.
+
 A geometry defines a box the image must fit within: `WIDTHxHEIGHT`.
+
 
 ```sh
 # scale to a 300 pixel width box by 900 pixel high box
 http://server/images/john/scaled/300x900/picture.png?HMAC_SIGNATURE
+                                 ^^^^^^^
 ```
 
 Either, but not both, dimensions may use the keyword `auto`. This will scale the image to fit the defined dimension.
@@ -36,22 +60,11 @@ Either, but not both, dimensions may use the keyword `auto`. This will scale the
 ```sh
 # scale to a 500 pixel wide box, of any height
 http://server/images/john/scaled/500xauto/picture.png?HMAC_SIGNATURE
+                                     ^^^^
 ```
 
 When using a geometry an HMAC is required (see below).
     
-Labels
-------
-
-A label is nothing more than a predefined geometry. It does not require an HMAC signature.
-
-```sh
-# A label called thumbnail has been defined as 100x100
-http://server/images/john/scaled/thumbnail/picture.png
-```
-
-*Labels generate the same file as geometry request. A symbolic link is used to statically server it.*
-
 Crop
 ----
 
