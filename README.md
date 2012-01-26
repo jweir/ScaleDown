@@ -132,7 +132,7 @@ The schema is
     :host           the address running ScaleDown
     :path_to_file   the public path of the original file
     `scaled`        keyword
-    :target         a label or width x height. An optional `-crop` can accompanie either
+    :target         a label or width x height. An optional `-crop` can be included with either
     :filename       the filename of the original image to scale
     :hmac_signature security measure to validate the request(not required for labels)
 
