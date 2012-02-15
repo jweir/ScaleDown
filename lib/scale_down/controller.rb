@@ -1,3 +1,5 @@
+require 'cgi'
+
 class ScaleDown::Controller < Sinatra::Application
 
   set :raise_errors, true
@@ -24,28 +26,24 @@ class ScaleDown::Controller < Sinatra::Application
 
     params = {
       :hmac     => request.env["QUERY_STRING"],
-      :filename => parts.pop,
+      :filename => CGI.unescape(parts.pop),
       :target   => parts.pop, # the label or geometry
       :splat    => parts
     }
 
-    path, status = dispatch(params)
+    body, status = dispatch(params)
 
-    ScaleDown.logger.info "Controller#get #{path} #{status}"
-    $0 = "scale_down Controller#get #{path} #{status}"
+    ScaleDown.logger.info "Controller#get #{body} #{status}"
+    $0 = "scale_down Controller#get #{body} #{status}"
     case status
     when 301 then
       # original is not a png/jpg redirect to jpg
-      redirect URI.encode(path), status
+      redirect URI.encode(body), status
     when 302 then
       # File is found or scaled, use Sinatra's built in send file method
       static!
-    when 403 then
-      [status, "Error: the the HMAC is invalid for this request"]
-    when 404 then
-      [status, "Error: the orignal image could not be found"]
     else
-      [status, "Error: this image could not be processed"]
+      [status, body]
     end
   end
 

@@ -10,7 +10,7 @@ class ScaleDown::Dispatcher
       ScaleDown.logger.info "Dipatcher#process #{dispatcher.root_path}"
       $0= "scale_down Dipatcher#process #{dispatcher.root_path}"
 
-      return ["Missing file", 404] unless dispatcher.root_file_exists?
+      return ["Missing file #{dispatcher.root_path}", 404] unless dispatcher.root_file_exists?
       return [dispatcher.redirect_path, dispatcher.redirect_code] if dispatcher.scaled_file_exists?
 
       return ["Invalid HMAC signature", 403] unless dispatcher.valid_hmac?

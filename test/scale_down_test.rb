@@ -11,6 +11,11 @@ class ScaleDown::Test < Test::Unit::TestCase
     get "#{path}?#{ScaleDown.hmac(path)}"
   end
 
+  def copy(f, to, num)
+    FileUtils.mkdir_p("/tmp/scale_down/test_images/example_#{num}")
+    FileUtils.cp fixture_path("files/#{f}"), "/tmp/scale_down/test_images/example_#{num}/#{to}"
+  end
+
   context "ScaleDown" do
     setup do
       ScaleDown.hmac_key    = "secret"
@@ -42,11 +47,8 @@ class ScaleDown::Test < Test::Unit::TestCase
 
     context "integration test" do
       setup do
-
-        FileUtils.mkdir_p("/tmp/scale_down/test_images/example_1")
-        FileUtils.cp fixture_path("files/graphic.png"), "/tmp/scale_down/test_images/example_1/graphic.png"
-        FileUtils.mkdir_p("/tmp/scale_down/test_images/example_2")
-        FileUtils.cp fixture_path("files/invalid_jpeg.jpg"), "/tmp/scale_down/test_images/example_2/invalid_jpeg.jpg"
+        copy 'graphic.png', 'graphic.png', 1
+        copy 'invalid_jpeg.jpg', 'invalid_jpeg.jpg', 2
       end
 
       teardown do
@@ -54,7 +56,7 @@ class ScaleDown::Test < Test::Unit::TestCase
       end
 
       should "get image info" do
-        FileUtils.cp fixture_path("files/cmyk.tif"), "/tmp/scale_down/test_images/example_1/long-name.tiff"
+        copy 'cmyk.tif', 'long-name.tiff', 1
         get "/test_images/example_1/#{CGI.escape 'long-name.tiff'}/info"
         assert_equal "300x500", last_response.body
       end
@@ -65,6 +67,14 @@ class ScaleDown::Test < Test::Unit::TestCase
         assert File.exists?("/tmp/scale_down/test_images/example_1/scaled/400x300-cropped/graphic.png")
       end
 
+      should "consider + in filenames as spaces" do
+        copy 'graphic.png', 'name space.png', 3
+
+        hmac = ScaleDown.hmac '/test_images/example_3/scaled/400x300/name space.png'
+        get "/test_images/example_3/scaled/400x300/name+space.png?#{hmac}"
+        assert_equal 200, last_response.status
+        assert File.exists?("/tmp/scale_down/test_images/example_3/scaled/400x300/name space.png")
+      end
       should "get a nonexistant image and return a 404" do
         valid_get "/test_images/example_none/scaled/400x300/image.jpg"
         assert_equal 404, last_response.status
