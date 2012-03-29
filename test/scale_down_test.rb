@@ -63,13 +63,12 @@ class ScaleDown::Test < Test::Unit::TestCase
 
         should "show the labels" do
           ScaleDown.labels = {
-            :medium => "100x100",
-            :large  => "800x800"
+            :medium => "100x100"
           }
 
           get "/"
-          assert_match "medium 100x100", last_response.body
-          assert_match "large 100x100", last_response.body
+          assert_match "medium", last_response.body
+          assert_match "100x100", last_response.body
         end
       end
 
