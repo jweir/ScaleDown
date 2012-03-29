@@ -55,6 +55,24 @@ class ScaleDown::Test < Test::Unit::TestCase
         FileUtils.rm_r("/tmp/scale_down")
       end
 
+      context "homepage" do
+        should "show the version" do
+          get "/"
+          assert_match ScaleDown::VERSION, last_response.body
+        end
+
+        should "show the labels" do
+          ScaleDown.labels = {
+            :medium => "100x100",
+            :large  => "800x800"
+          }
+
+          get "/"
+          assert_match "medium 100x100", last_response.body
+          assert_match "large 100x100", last_response.body
+        end
+      end
+
       should "get image info" do
         copy 'cmyk.tif', 'long-name.tiff', 1
         get "/test_images/example_1/#{CGI.escape 'long-name.tiff'}/info"

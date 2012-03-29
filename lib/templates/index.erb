@@ -1,0 +1,72 @@
+<!doctype html public>
+<html lang="en-us">
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
+    <style type='text/css'>
+       h1, h2 {
+         font-family: 'Lato', sans-serif;
+         text-transform: uppercase;
+         margin: 0;
+         padding: 0;
+       }
+
+       h1 {
+         font-size: 40px;
+         line-height: 40px;
+       }
+
+       h2 {
+         font-size: 20px;
+       }
+
+       body {
+         background-color: #DFDFD0;
+         font-size: 14px;
+         font-family: helvetica, arial, san-serif;
+         line-height: 20px;
+         color: #222233;
+         margin: 20px;
+       }
+
+       table {
+         border-collapse: collapse;
+       }
+       td {
+         padding: 0 0.5em 0 0;
+         line-height: 20px;
+         font-size: 14px;
+         font-family: helvetica, arial, san-serif;
+       }
+
+
+       a {
+         color: #444455;
+         text-shadow: 0 1px 1px #FFF;
+         text-decoration: none;
+         font-weight: bold;
+       }
+
+       p {
+         margin: 10px 0;
+       }
+
+    </style>
+    <h1>Scale Down</h1>
+    <b>version <%= ScaleDown::VERSION %></b>
+    <p>
+    The image scaling server for <a href='http://famedriver.com'>Fame Driver</a>.<br/>
+    Source code available on <a href='https://github.com/jweir/ScaleDown'>GitHub</a>.
+    </p>
+    <h2>Image sizes</h2>
+    <p>
+    There are two label systems.<br/>
+    One using English sizes the other numeric.<br/>
+    Take your pick or mix and match.
+    </p>
+    <table>
+      <% (ScaleDown.labels || {}).each do |key, dim| %>
+        <tr><td><%= dim %></td><td><b><%= key %></b></td></tr>
+      <% end %>
+    </table>
+  </head>
+</html>

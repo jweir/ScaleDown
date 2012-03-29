@@ -5,9 +5,11 @@ class ScaleDown::Controller < Sinatra::Application
   set :raise_errors, true
   set :show_exceptions, false
   set :static, true
+  set :views, settings.root + "/templates"
 
   get '/' do
-    "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"
+    # "<b>ScaleDown version #{ScaleDown::VERSION}<b/>"
+    erb :index
   end
 
   get '/*/info' do
