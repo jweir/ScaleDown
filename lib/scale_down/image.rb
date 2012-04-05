@@ -70,11 +70,9 @@ class ScaleDown::Image
 
     def fix_color_space(file)
       if file.colorspace == Magick::CMYKColorspace
-        file.strip!
         file.add_profile "#{File.expand_path(File.dirname(__FILE__))}/../../color_profiles/sRGB.icm"
-        file.quantize(2**24, Magick::RGBColorspace).tap do |image|
-          image.colorspace = Magick::RGBColorspace
-        end
+        file.colorspace = Magick::RGBColorspace
+        file
       else
         file
       end
