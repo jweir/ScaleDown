@@ -13,6 +13,7 @@ module ScaleDown
   require 'scale_down/controller'
   require 'scale_down/dispatcher'
   require 'scale_down/image'
+  require 'scale_down/info'
 
   class InvalidGeometry < Exception; end
   class FileSizeTooLarge < Exception; end

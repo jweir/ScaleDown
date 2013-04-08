@@ -19,17 +19,6 @@ class ScaleDown::Dispatcher
       [dispatcher.redirect_path, dispatcher.redirect_code]
     end
 
-    # TODO return a JSON response with a full set of image details
-    def info(relative_path)
-      path = [ScaleDown.public_folder, relative_path].join("/")
-      if File.exists?(path)
-        GC.start
-        image = Magick::Image.read(path).first
-        [image.columns, image.rows].join('x')
-      else
-        nil
-      end
-    end
   end
 
   def initialize(params)

@@ -9,12 +9,14 @@ ScaleDown
 So you want to scale an image?
 ------------------------------
 
-You have an image on `example.com`. It has a public path of `/images/john/picture.png`.
-You want it scaled to fit in a 400x400 pixel box.  ScaleDown is running on the subdomain `images`.
+You have an image on `example.com`. It has a public path of
+`/images/john/picture.png`.  You want it scaled to fit in a 400x400 pixel box.
+ScaleDown is running on the subdomain `images`.
 
     http://server/images/john/scaled/400x400/picture.png?HMAC_SIGNATURE
 
-The scaled file is saved in a public path identical to the request. It will be statically served on the next request.
+The scaled file is saved in a public path identical to the request. It will be
+statically served on the next request.
 
 Geometry, Labels and Cropping
 ==============================
@@ -52,10 +54,11 @@ A geometry defines a box the image must fit within: `WIDTHxHEIGHT`.
 ```sh
 # scale to a 300 pixel width box by 900 pixel high box
 http://server/images/john/scaled/300x900/picture.png?HMAC_SIGNATURE
-                                 ^^^^^^^
+^^^^^^^
 ```
 
-Either, but not both, dimensions may use the keyword `auto`. This will scale the image to fit the defined dimension.
+Either, but not both, dimensions may use the keyword `auto`. This will scale
+the image to fit the defined dimension.
 
 ```sh
 # scale to a 500 pixel wide box, of any height
@@ -68,7 +71,9 @@ When using a geometry an HMAC is required (see below).
 Crop
 ----
 
-To crop an image include the `-crop` option.  The image will be scaled and cropped to fit the geometry. This is a simple crop positioned on the center and top of the image.
+To crop an image include the `-crop` option.  The image will be scaled and
+cropped to fit the geometry. This is a simple crop positioned on the center and
+top of the image.
 
 Both geometry and labels accept the `-crop` option.
 
@@ -79,7 +84,9 @@ http://server/images/john/scaled/100x100-crop/picture.png
 
 Info
 ----
-There is a very simple `/info` function for getting image dimensions. It just returns a string with the WIDTHxHEIGHT of the original image.
+There is a simple `/info` function for getting image dimensions. It just
+returns a json response the width, height and additional details of the
+original file.
 
     http://server/images/logo.png/info
 
@@ -183,7 +190,8 @@ Dependencies
 * RMagick
 * Ruby-HMAC
 
-RMagick can be a bit tricky to install, these links http://www.google.com/search?q=install+rmagick might help.
+RMagick can be a bit tricky to install, these links
+http://www.google.com/search?q=install+rmagick might help.
 
 LICENSE
 =======
@@ -192,8 +200,20 @@ LICENSE
 
 Copyright © 2011 John Weir & Fame Driver LLC
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the ‘Software’), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

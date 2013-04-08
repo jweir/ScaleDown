@@ -52,20 +52,20 @@ class ScaleDown::Controller::Test < Test::Unit::TestCase
   context "get dimensions" do
     context "for image which exists" do
       setup do
-        ScaleDown::Dispatcher.expects(:info).with("image/path/image.jpg").returns "400x300"
+        ScaleDown::Info.expects(:new).with("image/path/image.jpg").returns mock(missing?: false, to_json: 'json_blob')
       end
 
       should "return the width and height as json" do
         get "/image/path/image.jpg/info"
 
         assert_equal 200, last_response.status
-        assert_equal "400x300", last_response.body
+        assert_equal "json_blob", last_response.body
       end
     end
 
     context "for a non-existant image" do
       setup do
-        ScaleDown::Dispatcher.expects(:info).with("image/path/image.jpg").returns nil
+        ScaleDown::Info.expects(:new).with("image/path/image.jpg").returns mock(missing?: true)
       end
 
       should "respond with a 404" do

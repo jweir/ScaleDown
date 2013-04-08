@@ -13,9 +13,9 @@ class ScaleDown::Controller < Sinatra::Application
   end
 
   get '/*/info' do
-    info = ScaleDown::Dispatcher.info(params[:splat].join("/"))
-    if info
-      [200, info]
+    info = ScaleDown::Info.new(params[:splat].join("/"))
+    if ! info.missing?
+      [200, info.to_json]
     else
       [404, "Image not found"]
     end
